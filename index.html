@@ -56,7 +56,6 @@
       backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.1);
     }
-    /* Zoro Animated Background Card */
     .zoro-bg-card {
       background: linear-gradient(135deg, rgba(7, 9, 14, 0.90) 0%, rgba(15, 23, 42, 0.82) 100%), 
                   url('https://c.tenor.com/2s_1bU8M3sQAAAAC/one-piece-zoro.gif');
@@ -117,7 +116,7 @@
 
       <div class="text-slate-300 text-xs md:text-sm leading-relaxed space-y-3 bg-slate-900/60 p-4 rounded-xl border border-slate-800">
         <p>
-          At <strong>zoroTV</strong>, our sole purpose and objective is to provide high-quality entertainment with access to over 100,000+ Anime, Movies, and TV Shows worldwide.
+          At <strong>zoroTV</strong>, our sole purpose and objective is to provide high-quality entertainment with access to thousands of Anime, Movies, and TV Shows worldwide.
         </p>
         <p>
           We deeply respect content creators, rights holders, and intellectual property owners. Our platform does not intend to infringe, harm, or violate anyone’s rights or business models.
@@ -259,13 +258,14 @@
 
       <!-- STREAM PLAYER CONTAINER -->
       <div class="relative w-full aspect-video bg-black flex items-center justify-center">
+
         <div id="trailerLoader" class="text-slate-400 text-sm flex flex-col items-center gap-3 text-center px-4">
           <i class="fa-solid fa-spinner animate-spin text-emerald-500 text-2xl"></i> 
           <span id="loaderText">Loading Stream...</span>
         </div>
 
         <!-- CLICK SHIELD OVERLAY TO ABSORB POP-UP REDIRECTS -->
-        <div id="playerClickShield" onclick="dismissClickShield()" class="absolute inset-0 z-20 cursor-pointer hidden flex items-center justify-center bg-black/10">
+        <div id="playerClickShield" onclick="dismissClickShield()" class="absolute inset-0 z-20 cursor-pointer hidden flex items-center justify-center bg-black/5">
         </div>
 
         <!-- STANDARD IFRAME FOR FULL COMPATIBILITY -->
@@ -274,23 +274,41 @@
           allowfullscreen></iframe>
       </div>
 
-      <!-- SERVER SELECTION BAR (GENERIC LABELS ONLY) -->
-      <div id="serverBar" class="hidden bg-slate-900/90 border-b border-slate-800 px-5 py-2.5 flex items-center justify-between text-xs">
-        <span class="text-slate-400 font-bold flex items-center gap-1.5"><i class="fa-solid fa-server text-emerald-400"></i> Stream Server:</span>
-        <div class="flex items-center gap-2">
-          <button onclick="switchServer(1)" id="srv1" class="bg-emerald-600 text-white font-bold px-3 py-1 rounded transition">Server 1</button>
-          <button onclick="switchServer(2)" id="srv2" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3 py-1 rounded transition">Server 2</button>
-          <button onclick="switchServer(3)" id="srv3" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3 py-1 rounded transition">Server 3</button>
+      <!-- SERVER SELECTION & NEXT EPISODE BAR -->
+      <div id="serverBar" class="hidden bg-slate-900/90 border-b border-slate-800 px-5 py-2.5 flex flex-wrap items-center justify-between gap-2 text-xs">
+        <div class="flex items-center gap-2 flex-wrap">
+          <span class="text-slate-400 font-bold flex items-center gap-1.5"><i class="fa-solid fa-server text-emerald-400"></i> Server:</span>
+          <div class="flex items-center gap-1.5 flex-wrap">
+            <button onclick="switchServer(1)" id="srv1" class="bg-emerald-600 text-white font-bold px-3 py-1 rounded transition">Server 1</button>
+            <button onclick="switchServer(2)" id="srv2" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3 py-1 rounded transition">Server 2</button>
+            <button onclick="switchServer(3)" id="srv3" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3 py-1 rounded transition">Server 3</button>
+            <button onclick="switchServer(4)" id="srv4" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3 py-1 rounded transition">Server 4</button>
+            <button onclick="switchServer(5)" id="srv5" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3 py-1 rounded transition">Server 5</button>
+          </div>
         </div>
+
+        <!-- NEXT EPISODE BUTTON -->
+        <button id="nextEpisodeBtn" onclick="playNextEpisode()" class="hidden bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold px-3.5 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 shadow">
+          <span>Next Episode</span> <i class="fa-solid fa-forward"></i>
+        </button>
       </div>
 
-      <!-- TV SEASONS / EPISODES -->
+      <!-- TV SEASONS / EPISODES WITH MOVED "NOW WATCHING" BANNER -->
       <div id="tvEpisodesSection" class="hidden bg-slate-900/80 border-b border-slate-800 p-4">
-        <div class="flex items-center justify-between mb-3">
-          <div class="flex items-center gap-2">
-            <i class="fa-solid fa-list text-emerald-400 text-sm"></i>
-            <span class="text-white text-xs font-bold uppercase tracking-wider">Select Season & Episode</span>
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <div class="flex items-center gap-3 flex-wrap">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-list text-emerald-400 text-sm"></i>
+              <span class="text-white text-xs font-bold uppercase tracking-wider">Select Season & Episode</span>
+            </div>
+
+            <!-- MOVED "NOW WATCHING" BANNER RIGHT BESIDE "SELECT SEASON & EPISODE" -->
+            <div id="playingEpisodeBanner" class="hidden bg-emerald-950/90 border border-emerald-500/50 text-emerald-400 font-bold px-2.5 py-1 rounded-lg text-xs flex items-center gap-1.5 shadow">
+              <i class="fa-solid fa-play text-[10px] animate-pulse"></i>
+              <span id="playingEpisodeText">NOW WATCHING: Season 1, Episode 1</span>
+            </div>
           </div>
+
           <div class="flex items-center gap-2">
             <label class="text-xs text-slate-400 font-medium">Season:</label>
             <select id="seasonSelect" onchange="loadSeasonEpisodes()" class="bg-slate-800 text-white text-xs font-bold rounded px-2.5 py-1 border border-slate-700 focus:outline-none focus:border-emerald-500 cursor-pointer"></select>
@@ -345,7 +363,7 @@
   <script>
     function acceptTerms() {
       document.getElementById('termsModal').classList.add('hidden');
-      document.body.style.overflow = '';
+      document.body.style.overflow = 'auto';
       document.body.classList.remove('overflow-hidden');
     }
 
@@ -353,11 +371,12 @@
       document.getElementById('logoModal').classList.remove('hidden');
       document.body.style.overflow = 'hidden';
     }
+
     function closeLogoModal() {
       document.getElementById('logoModal').classList.add('hidden');
       if (document.getElementById('detailModal').classList.contains('hidden') && 
           document.getElementById('termsModal').classList.contains('hidden')) {
-        document.body.style.overflow = '';
+        document.body.style.overflow = 'auto';
       }
     }
 
@@ -376,6 +395,7 @@
     let activeMedia = { id: null, type: 'movie', title: '' };
     let selectedSeason = 1;
     let selectedEpisode = 1;
+    let totalSeasonEpisodes = 1;
     let searchDebounce = null;
     let currentServer = 1;
     let activeCategorySession = 0;
@@ -431,7 +451,7 @@
       }
 
       let endpoints = [];
-      for (let p = page; p < page + 5; p++) {
+      for (let p = page; p < page + 10; p++) {
         if (category === 'trending') {
           endpoints.push(`https://api.themoviedb.org/3/trending/all/day?api_key=${TMDB_KEY}&page=${p}`);
         } else if (category === 'anime') {
@@ -481,12 +501,11 @@
       }
     }
 
-    // AUTOMATIC INFINITE SCROLL EVENT LISTENER
     window.addEventListener('scroll', () => {
       if (isFetchingMore) return;
       const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
       if (scrollTop + clientHeight >= scrollHeight - 700) {
-        currentPage += 5;
+        currentPage += 10;
         fetchCatalog(currentCategory, currentPage, true);
       }
     });
@@ -611,7 +630,6 @@
       try {
         let res = await fetch(`https://api.themoviedb.org/3/${mediaEndpoint}/${id}/videos?api_key=${TMDB_KEY}&language=en-US`);
         let data = await res.json();
-        
         let videos = (data && data.results) ? data.results : [];
 
         if (videos.length === 0) {
@@ -661,6 +679,8 @@
       document.getElementById('modalYear').innerText = year;
       document.getElementById('modalDescription').innerText = desc;
       document.getElementById('serverBar').classList.add('hidden');
+      document.getElementById('playingEpisodeBanner').classList.add('hidden');
+      document.getElementById('nextEpisodeBtn').classList.add('hidden');
 
       fetchCastInfo(id, mediaEndpoint);
 
@@ -734,7 +754,6 @@
 
     async function loadSeasonEpisodes(totalEpFallback = 0) {
       selectedSeason = document.getElementById('seasonSelect').value || 1;
-      selectedEpisode = 1;
       const episodesList = document.getElementById('episodesList');
       episodesList.innerHTML = `<div class="text-emerald-400 text-xs py-2"><i class="fa-solid fa-spinner animate-spin"></i> Fetching episodes...</div>`;
 
@@ -746,13 +765,17 @@
 
         episodesList.innerHTML = '';
         if (data.episodes && data.episodes.length > 0) {
-          data.episodes.forEach(ep => {
-            const isSelected = (ep.episode_number === selectedEpisode);
+          totalSeasonEpisodes = data.episodes.length;
+          selectedEpisode = data.episodes[0].episode_number;
+
+          data.episodes.forEach((ep, idx) => {
+            const isSelected = (idx === 0);
             const epBtn = document.createElement('button');
             epBtn.className = `ep-btn text-xs font-semibold px-3 py-2 rounded-lg border text-left transition flex items-center gap-2 truncate max-w-[210px] ${
               isSelected ? 'bg-emerald-600 border-emerald-500 text-white font-bold' : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'
             }`;
             epBtn.id = `epBtn_${ep.episode_number}`;
+            epBtn.setAttribute('data-epnum', ep.episode_number);
             epBtn.onclick = () => selectEpisode(ep.episode_number);
 
             epBtn.innerHTML = `
@@ -762,25 +785,27 @@
             episodesList.appendChild(epBtn);
           });
         } else {
-          renderFallbackEpisodes(totalEpFallback || 24);
+          renderFallbackEpisodes(totalEpFallback || 1100);
         }
       } catch (err) {
-        renderFallbackEpisodes(totalEpFallback || 24);
+        renderFallbackEpisodes(totalEpFallback || 1100);
       }
     }
 
-    function renderFallbackEpisodes(count = 24) {
+    function renderFallbackEpisodes(count = 1100) {
       const episodesList = document.getElementById('episodesList');
       episodesList.innerHTML = '';
-      const limit = Math.min(count, 1500);
+      totalSeasonEpisodes = count;
+      selectedEpisode = 1;
 
-      for (let i = 1; i <= (limit || 24); i++) {
+      for (let i = 1; i <= count; i++) {
         const isSelected = (i === selectedEpisode);
         const epBtn = document.createElement('button');
         epBtn.className = `ep-btn text-xs font-semibold px-3 py-2 rounded-lg border text-left transition flex items-center gap-2 truncate max-w-[210px] ${
           isSelected ? 'bg-emerald-600 border-emerald-500 text-white font-bold' : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'
         }`;
         epBtn.id = `epBtn_${i}`;
+        epBtn.setAttribute('data-epnum', i);
         epBtn.onclick = () => selectEpisode(i);
 
         epBtn.innerHTML = `
@@ -801,6 +826,25 @@
       startStream(currentServer);
     }
 
+    function playNextEpisode() {
+      const epButtons = Array.from(document.querySelectorAll('.ep-btn'));
+      const currentIndex = epButtons.findIndex(btn => Number(btn.getAttribute('data-epnum')) === Number(selectedEpisode));
+      
+      if (currentIndex !== -1 && currentIndex < epButtons.length - 1) {
+        const nextEpNum = Number(epButtons[currentIndex + 1].getAttribute('data-epnum'));
+        selectEpisode(nextEpNum);
+      } else {
+        const seasonSelect = document.getElementById('seasonSelect');
+        if (seasonSelect && seasonSelect.selectedIndex < seasonSelect.options.length - 1) {
+          seasonSelect.selectedIndex++;
+          loadSeasonEpisodes().then(() => {
+            const firstEpBtn = document.querySelector('.ep-btn');
+            if (firstEpBtn) selectEpisode(Number(firstEpBtn.getAttribute('data-epnum')));
+          });
+        }
+      }
+    }
+
     function startStream(serverNum = 1) {
       if (!activeMedia.id) return;
       currentServer = serverNum;
@@ -809,27 +853,55 @@
       const loader = document.getElementById('trailerLoader');
       const serverBar = document.getElementById('serverBar');
       const shield = document.getElementById('playerClickShield');
+      const banner = document.getElementById('playingEpisodeBanner');
+      const bannerText = document.getElementById('playingEpisodeText');
+      const nextBtn = document.getElementById('nextEpisodeBtn');
 
       serverBar.classList.remove('hidden');
       updateServerButtons(serverNum);
 
-      shield.classList.remove('hidden');
+      const isMovie = (activeMedia.type === 'movie');
+
+      if (!isMovie) {
+        banner.classList.remove('hidden');
+        bannerText.innerText = `NOW WATCHING: Season ${selectedSeason}, Episode ${selectedEpisode}`;
+        nextBtn.classList.remove('hidden');
+      } else {
+        banner.classList.add('hidden');
+        nextBtn.classList.add('hidden');
+      }
+
+      // ANIME / LONG-RUNNING SHOW MAPPING FIX:
+      // If episode number > 100 (e.g. One Piece Ep 1050), pass Season 1 with absolute episode number
+      let targetSeason = selectedSeason;
+      let targetEpisode = selectedEpisode;
+
+      if (!isMovie && selectedEpisode > 100) {
+        targetSeason = 1;
+      }
 
       let streamUrl = "";
-      const isMovie = (activeMedia.type === 'movie');
 
       if (serverNum === 1) {
         streamUrl = isMovie 
-          ? `https://vidsrc.me/embed/movie?tmdb=${activeMedia.id}`
-          : `https://vidsrc.me/embed/tv?tmdb=${activeMedia.id}&season=${selectedSeason}&episode=${selectedEpisode}`;
+          ? `https://vidsrc.pro/embed/movie/${activeMedia.id}`
+          : `https://vidsrc.pro/embed/tv/${activeMedia.id}/${targetSeason}/${targetEpisode}`;
       } else if (serverNum === 2) {
         streamUrl = isMovie 
-          ? `https://vidsrc.pro/embed/movie/${activeMedia.id}`
-          : `https://vidsrc.pro/embed/tv/${activeMedia.id}/${selectedSeason}/${selectedEpisode}`;
+          ? `https://player.videasy.net/movie/${activeMedia.id}`
+          : `https://player.videasy.net/tv/${activeMedia.id}/${targetSeason}/${targetEpisode}`;
       } else if (serverNum === 3) {
-        streamUrl = isMovie 
+        streamUrl = isMovie
+          ? `https://vidlink.pro/movie/${activeMedia.id}`
+          : `https://vidlink.pro/tv/${activeMedia.id}/${targetSeason}/${targetEpisode}`;
+      } else if (serverNum === 4) {
+        streamUrl = isMovie
+          ? `https://player.autoembed.cc/embed/movie/${activeMedia.id}`
+          : `https://player.autoembed.cc/embed/tv/${activeMedia.id}/${targetSeason}/${targetEpisode}`;
+      } else if (serverNum === 5) {
+        streamUrl = isMovie
           ? `https://vidsrc.cc/v2/embed/movie/${activeMedia.id}`
-          : `https://vidsrc.cc/v2/embed/tv/${activeMedia.id}/${selectedSeason}/${selectedEpisode}`;
+          : `https://vidsrc.cc/v2/embed/tv/${activeMedia.id}/${targetSeason}/${targetEpisode}`;
       }
 
       trailerFrame.src = streamUrl;
@@ -842,14 +914,15 @@
     }
 
     function updateServerButtons(num) {
-      [1, 2, 3].forEach(n => {
+      [1, 2, 3, 4, 5].forEach(n => {
         const btn = document.getElementById(`srv${n}`);
-        if (n === num) btn.className = "bg-emerald-600 text-white font-bold px-3 py-1 rounded transition";
-        else btn.className = "bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3 py-1 rounded transition";
+        if (btn) {
+          if (n === num) btn.className = "bg-emerald-600 text-white font-bold px-3 py-1 rounded transition";
+          else btn.className = "bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3 py-1 rounded transition";
+        }
       });
     }
 
-    // STRICT CLEANUP CLOSE FUNCTION TO PREVENT UI FREEZE
     function closeModal() {
       const modal = document.getElementById('detailModal');
       const trailerFrame = document.getElementById('modalTrailer');
@@ -859,10 +932,10 @@
       trailerFrame.classList.add('hidden');
       
       document.getElementById('serverBar').classList.add('hidden');
+      document.getElementById('playingEpisodeBanner').classList.add('hidden');
       document.getElementById('playerClickShield').classList.add('hidden');
 
-      // Restore scrollable state
-      document.body.style.overflow = '';
+      document.body.style.overflow = 'auto';
       document.body.classList.remove('overflow-hidden');
     }
 
