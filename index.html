@@ -152,7 +152,7 @@
       <!-- Search Bar -->
       <div class="flex items-center gap-3">
         <div class="relative">
-          <input id="searchInput" oninput="debounceSearch()" type="text" placeholder="Search 100k+ titles..." 
+          <input id="searchInput" oninput="debounceSearch()" type="text" placeholder="Search titles..." 
             class="bg-slate-900/90 text-sm text-white rounded-full pl-10 pr-4 py-2 w-36 sm:w-64 border border-slate-700 focus:outline-none focus:border-emerald-500 transition duration-200">
           <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-sm"></i>
         </div>
@@ -202,7 +202,7 @@
     <!-- CONTENT GRID ROW -->
     <section class="max-w-7xl mx-auto px-6 mb-16">
       <h2 id="sectionTitle" class="text-xl md:text-2xl font-bold text-white mb-6 flex items-center gap-2">
-        <span class="w-1.5 h-6 bg-emerald-500 rounded-full"></span> zoroTV Library (100k+ Titles)
+        <span class="w-1.5 h-6 bg-emerald-500 rounded-full"></span> zoroTV Library
       </h2>
 
       <div id="contentGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-5">
@@ -232,7 +232,7 @@
           </div>
           
           <div class="flex items-center gap-2 text-emerald-400 text-xs md:text-sm font-semibold bg-black/60 px-4 py-2 rounded-lg border border-emerald-500/20">
-            <i class="fa-solid fa-bolt text-emerald-400"></i> Over 100k+ Movies, TV Shows & Anime
+            <i class="fa-solid fa-bolt text-emerald-400"></i> Anime, Movies & TV Shows
           </div>
         </div>
 
@@ -241,7 +241,7 @@
             Welcome to <strong>zoroTV</strong>! Established back in <strong>2015</strong>, our platform is built for anime enthusiasts and movie lovers worldwide.
           </p>
           <p>
-            With an expansive collection exceeding <strong>100,000+ Anime series, Movies, and TV Shows</strong>, zoroTV gives you instant access to lightning-fast servers, HD streams, and updated episodes without limits.
+            With an expansive collection of <strong>Anime series, Movies, and TV Shows</strong>, zoroTV gives you instant access to lightning-fast servers, HD streams, and updated episodes without limits.
           </p>
         </div>
       </div>
@@ -710,11 +710,12 @@
 
         seasonSelect.innerHTML = '';
         if (data.seasons && data.seasons.length > 0) {
-          const validSeasons = data.seasons.filter(s => s.season_number > 0 && s.episode_count > 0);
+          const validSeasons = data.seasons.filter(s => s.season_number >= 0 && s.episode_count > 0);
           validSeasons.forEach(s => {
             const option = document.createElement('option');
             option.value = s.season_number;
-            option.innerText = `Season ${s.season_number} (${s.episode_count} Episodes)`;
+            const seasonLabel = s.season_number === 0 ? "Specials" : `Season ${s.season_number}`;
+            option.innerText = `${seasonLabel} (${s.episode_count} Episodes)`;
             seasonSelect.appendChild(option);
           });
         } else {
@@ -722,7 +723,7 @@
         }
         selectedSeason = seasonSelect.value || 1;
         selectedEpisode = 1;
-        await loadSeasonEpisodes();
+        await loadSeasonEpisodes(data.number_of_episodes || 0);
       } catch (e) {
         seasonSelect.innerHTML = `<option value="1">Season 1</option>`;
         selectedSeason = 1;
@@ -731,7 +732,7 @@
       }
     }
 
-    async function loadSeasonEpisodes() {
+    async function loadSeasonEpisodes(totalEpFallback = 0) {
       selectedSeason = document.getElementById('seasonSelect').value || 1;
       selectedEpisode = 1;
       const episodesList = document.getElementById('episodesList');
@@ -739,6 +740,8 @@
 
       try {
         const res = await fetch(`https://api.themoviedb.org/3/tv/${activeMedia.id}/season/${selectedSeason}?api_key=${TMDB_KEY}`);
+        
+        if (!res.ok) throw new Error("Failed episode response");
         const data = await res.json();
 
         episodesList.innerHTML = '';
@@ -758,9 +761,33 @@
             `;
             episodesList.appendChild(epBtn);
           });
+        } else {
+          renderFallbackEpisodes(totalEpFallback || 24);
         }
       } catch (err) {
-        episodesList.innerHTML = `<div class="text-red-400 text-xs py-2">Failed to load episodes.</div>`;
+        renderFallbackEpisodes(totalEpFallback || 24);
+      }
+    }
+
+    function renderFallbackEpisodes(count = 24) {
+      const episodesList = document.getElementById('episodesList');
+      episodesList.innerHTML = '';
+      const limit = Math.min(count, 1500);
+
+      for (let i = 1; i <= (limit || 24); i++) {
+        const isSelected = (i === selectedEpisode);
+        const epBtn = document.createElement('button');
+        epBtn.className = `ep-btn text-xs font-semibold px-3 py-2 rounded-lg border text-left transition flex items-center gap-2 truncate max-w-[210px] ${
+          isSelected ? 'bg-emerald-600 border-emerald-500 text-white font-bold' : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'
+        }`;
+        epBtn.id = `epBtn_${i}`;
+        epBtn.onclick = () => selectEpisode(i);
+
+        epBtn.innerHTML = `
+          <span class="bg-black/40 px-1.5 py-0.5 rounded text-[10px] text-emerald-300">E${i}</span>
+          <span class="truncate">Episode ${i}</span>
+        `;
+        episodesList.appendChild(epBtn);
       }
     }
 
