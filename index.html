@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>zoroTV - Stream Movies, TV Shows & Anime</title>
+  
+  <!-- PRECONNECTS FOR INSTANT DNS RESOLUTION -->
+  <link rel="dns-prefetch" href="//api.themoviedb.org" />
+  <link rel="dns-prefetch" href="//image.tmdb.org" />
+  <link rel="dns-prefetch" href="//cdn.tailwindcss.com" />
+  <link rel="dns-prefetch" href="//cdnjs.cloudflare.com" />
+  <link rel="preconnect" href="https://image.tmdb.org" crossorigin />
+  <link rel="preconnect" href="https://api.themoviedb.org" crossorigin />
+
+  <!-- Tailwind CSS & FontAwesome -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #07090e;
+      color: #e2e8f0;
+      overflow-x: hidden;
+    }
+    .brand-font {
+      font-family: 'Orbitron', sans-serif;
+    }
+    .animated-gradient-text {
+      background: linear-gradient(-45deg, #10b981, #06b6d4, #3b82f6, #a855f7);
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientShift 5s ease infinite;
+    }
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .ps-glow { box-shadow: 0 0 25px rgba(16, 185, 129, 0.35); }
+    .ps-card-glow:hover {
+      box-shadow: 0 0 30px rgba(16, 185, 129, 0.6), 0 0 10px rgba(6, 182, 212, 0.5);
+      border-color: rgba(16, 185, 129, 0.8);
+    }
+    .glass-nav {
+      background: rgba(11, 15, 25, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-panel {
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    /* Zoro Animated Background Card */
+    .zoro-bg-card {
+      background: linear-gradient(135deg, rgba(7, 9, 14, 0.90) 0%, rgba(15, 23, 42, 0.82) 100%), 
+                  url('https://c.tenor.com/2s_1bU8M3sQAAAAC/one-piece-zoro.gif');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #07090e; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #10b981; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-emerald-600 selection:text-white">
+
+  <!-- ENTRY TERMS POPUP MODAL -->
+  <div id="termsModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md">
+    <div class="relative glass-panel w-full max-w-lg rounded-2xl p-6 md:p-8 border border-emerald-500/40 text-center shadow-2xl">
+      <div class="w-16 h-16 bg-emerald-600/20 border border-emerald-500/50 rounded-full flex items-center justify-center mx-auto mb-5 text-emerald-400 text-2xl">
+        <i class="fa-solid fa-shield-halved"></i>
+      </div>
+      
+      <h2 class="text-2xl font-black text-white mb-3 brand-font tracking-wide">
+        TERMS OF USE
+      </h2>
+      
+      <div class="text-slate-300 text-sm leading-relaxed space-y-3 mb-6 bg-slate-900/60 p-4 rounded-xl border border-slate-800 text-left">
+        <p class="font-medium">
+          Welcome to <strong>zoroTV</strong>. Before accessing our library, please review and accept our usage policy:
+        </p>
+        <ul class="list-disc list-inside space-y-1 text-slate-400 text-xs">
+          <li>We only allow <strong>personal, non-commercial use</strong>.</li>
+          <li>Any commercial use, re-distribution, or public broadcast is <strong>strictly prohibited</strong>.</li>
+        </ul>
+      </div>
+
+      <button onclick="acceptTerms()" class="w-full ps-glow bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-3.5 px-6 rounded-xl text-sm transition transform active:scale-95 flex items-center justify-center gap-2">
+        <i class="fa-solid fa-check"></i> I understand and accept all the terms and conditions
+      </button>
+    </div>
+  </div>
+
+  <!-- LOGO INFORMATION MODAL -->
+  <div id="logoModal" onclick="if(event.target === this) closeLogoModal()" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+    <div class="relative glass-panel w-full max-w-lg rounded-2xl p-6 md:p-8 border border-emerald-500/40 text-left shadow-2xl">
+      <button onclick="closeLogoModal()" class="absolute top-4 right-4 z-20 w-8 h-8 bg-slate-900/90 hover:bg-slate-800 text-white rounded-full flex items-center justify-center transition border border-slate-700">
+        <i class="fa-solid fa-xmark text-sm"></i>
+      </button>
+
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-10 h-10 bg-emerald-600/20 border border-emerald-500/50 rounded-full flex items-center justify-center text-emerald-400 text-lg">
+          <i class="fa-solid fa-sword"></i>
+        </div>
+        <h3 class="text-xl font-bold text-white brand-font tracking-wide">About zoroTV</h3>
+      </div>
+
+      <div class="text-slate-300 text-xs md:text-sm leading-relaxed space-y-3 bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+        <p>
+          At <strong>zoroTV</strong>, our sole purpose and objective is to provide high-quality entertainment with access to over 100,000+ Anime, Movies, and TV Shows worldwide.
+        </p>
+        <p>
+          We deeply respect content creators, rights holders, and intellectual property owners. Our platform does not intend to infringe, harm, or violate anyone’s rights or business models.
+        </p>
+      </div>
+
+      <button onclick="closeLogoModal()" class="mt-5 w-full bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2.5 px-4 rounded-xl text-xs transition border border-slate-700">
+        Close Window
+      </button>
+    </div>
+  </div>
+
+  <!-- TOP NAVBAR -->
+  <header class="fixed top-0 left-0 right-0 z-40 glass-nav px-4 md:px-6 py-4 transition-all duration-300">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+      
+      <!-- Logo & Navigation -->
+      <div class="flex items-center gap-8">
+        <button onclick="openLogoModal()" class="brand-font text-xl md:text-3xl font-extrabold tracking-wider flex items-center gap-2 animated-gradient-text focus:outline-none hover:opacity-90 transition">
+          <i class="fa-solid fa-circle-play text-emerald-500 text-lg md:text-2xl"></i> zoroTV
+        </button>
+        
+        <nav class="hidden md:flex items-center gap-6 text-sm font-semibold text-gray-300">
+          <button onclick="switchCategoryTab('trending')" class="hover:text-emerald-400 transition">Trending</button>
+          <button onclick="switchCategoryTab('anime')" class="hover:text-emerald-400 transition">Anime</button>
+          <button onclick="switchCategoryTab('movie')" class="hover:text-emerald-400 transition">Movies</button>
+          <button onclick="switchCategoryTab('tv')" class="hover:text-emerald-400 transition">TV Shows</button>
+          <a href="#aboutSection" class="hover:text-emerald-400 transition">About Us</a>
+        </nav>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="flex items-center gap-3">
+        <div class="relative">
+          <input id="searchInput" oninput="debounceSearch()" type="text" placeholder="Search 100k+ titles..." 
+            class="bg-slate-900/90 text-sm text-white rounded-full pl-10 pr-4 py-2 w-36 sm:w-64 border border-slate-700 focus:outline-none focus:border-emerald-500 transition duration-200">
+          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-sm"></i>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="pt-20 pb-16 flex-grow">
+
+    <!-- HERO FEATURED SECTION -->
+    <section class="relative w-full h-[55vh] min-h-[420px] max-h-[600px] mb-8 overflow-hidden">
+      <div id="heroBg" class="absolute inset-0 bg-cover bg-center transition-all duration-1000 scale-105" style="background-image: url('https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=1600&auto=format&fit=crop');"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-[#07090e] via-[#07090e]/60 to-transparent"></div>
+      <div class="absolute inset-0 bg-gradient-to-r from-[#07090e] via-[#07090e]/80 to-transparent"></div>
+
+      <div class="relative max-w-7xl mx-auto h-full px-6 flex flex-col justify-end pb-12">
+        <div class="inline-flex items-center gap-2 bg-emerald-600/30 border border-emerald-500/50 rounded-full px-3 py-1 text-xs text-emerald-300 font-semibold mb-3 w-fit">
+          <i class="fa-solid fa-fire"></i> FEATURED ON zoroTV
+        </div>
+        <h1 id="heroTitle" class="brand-font text-2xl md:text-5xl font-black text-white mb-3 tracking-wide drop-shadow-lg">
+          Loading Featured...
+        </h1>
+        <p id="heroDesc" class="text-gray-300 text-xs md:text-base max-w-xl mb-6 line-clamp-3 leading-relaxed">
+          Connecting to catalog...
+        </p>
+
+        <div class="flex items-center gap-4">
+          <button id="heroPlayBtn" class="ps-glow bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold px-6 py-3 rounded-xl flex items-center gap-2 text-sm md:text-base transition transform hover:scale-105">
+            <i class="fa-solid fa-play"></i> Watch Trailer & Info
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- CATEGORY FILTER TABS -->
+    <div class="max-w-7xl mx-auto px-6 mb-6">
+      <div class="flex items-center gap-3 overflow-x-auto pb-2 text-sm no-scrollbar">
+        <button onclick="switchCategoryTab('trending')" id="tab_trending" class="cat-btn bg-emerald-600 text-white px-5 py-2 rounded-lg font-medium whitespace-nowrap">🔥 Popular & Trending</button>
+        <button onclick="switchCategoryTab('anime')" id="tab_anime" class="cat-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-5 py-2 rounded-lg font-medium whitespace-nowrap">⛩️ Anime Collection</button>
+        <button onclick="switchCategoryTab('movie')" id="tab_movie" class="cat-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-5 py-2 rounded-lg font-medium whitespace-nowrap">🎬 Movies Library</button>
+        <button onclick="switchCategoryTab('tv')" id="tab_tv" class="cat-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-5 py-2 rounded-lg font-medium whitespace-nowrap">📺 TV Shows</button>
+      </div>
+    </div>
+
+    <!-- CONTENT GRID ROW -->
+    <section class="max-w-7xl mx-auto px-6 mb-16">
+      <h2 id="sectionTitle" class="text-xl md:text-2xl font-bold text-white mb-6 flex items-center gap-2">
+        <span class="w-1.5 h-6 bg-emerald-500 rounded-full"></span> zoroTV Library (100k+ Titles)
+      </h2>
+
+      <div id="contentGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-5">
+        <!-- Media Cards -->
+      </div>
+
+      <!-- INFINITE SCROLL LOADING INDICATOR -->
+      <div id="infiniteLoader" class="mt-10 text-center py-6 hidden">
+        <div class="inline-flex items-center gap-3 text-emerald-400 font-semibold text-sm">
+          <i class="fa-solid fa-spinner animate-spin text-2xl"></i> Auto-loading more titles...
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT SECTION WITH ZORO GIF BACKGROUND -->
+    <section id="aboutSection" class="max-w-7xl mx-auto px-4 md:px-6 mb-12">
+      <div class="zoro-bg-card rounded-xl md:rounded-2xl p-6 sm:p-8 md:p-12 border border-emerald-500/30 relative overflow-hidden shadow-2xl">
+        
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 md:gap-6 mb-4 md:mb-6">
+          <div>
+            <span class="text-[10px] sm:text-xs font-bold text-emerald-400 uppercase tracking-widest bg-emerald-950/80 border border-emerald-800/80 px-3 py-1 rounded-full">
+              Established 2015
+            </span>
+            <h3 class="brand-font text-2xl sm:text-3xl md:text-4xl font-extrabold text-white mt-3 tracking-wider drop-shadow-md">
+              About zoroTV
+            </h3>
+          </div>
+          
+          <div class="flex items-center gap-2 text-emerald-400 text-xs md:text-sm font-semibold bg-black/60 px-4 py-2 rounded-lg border border-emerald-500/20">
+            <i class="fa-solid fa-bolt text-emerald-400"></i> Over 100k+ Movies, TV Shows & Anime
+          </div>
+        </div>
+
+        <div class="text-slate-200 text-xs sm:text-sm md:text-base leading-relaxed space-y-4 max-w-3xl drop-shadow">
+          <p>
+            Welcome to <strong>zoroTV</strong>! Established back in <strong>2015</strong>, our platform is built for anime enthusiasts and movie lovers worldwide.
+          </p>
+          <p>
+            With an expansive collection exceeding <strong>100,000+ Anime series, Movies, and TV Shows</strong>, zoroTV gives you instant access to lightning-fast servers, HD streams, and updated episodes without limits.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- DETAIL & STREAM MODAL -->
+  <div id="detailModal" onclick="if(event.target === this) closeModal()" class="fixed inset-0 z-50 hidden flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md overflow-y-auto">
+    <div class="relative glass-panel w-full max-w-4xl max-h-[92vh] rounded-2xl overflow-y-auto shadow-2xl border border-emerald-500/30 my-auto">
+      
+      <button onclick="closeModal()" class="absolute top-3 right-3 z-30 w-9 h-9 bg-slate-900/90 hover:bg-slate-800 text-white rounded-full flex items-center justify-center transition border border-slate-700">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <!-- STREAM PLAYER CONTAINER -->
+      <div class="relative w-full aspect-video bg-black flex items-center justify-center">
+        <div id="trailerLoader" class="text-slate-400 text-sm flex flex-col items-center gap-3 text-center px-4">
+          <i class="fa-solid fa-spinner animate-spin text-emerald-500 text-2xl"></i> 
+          <span id="loaderText">Loading Stream...</span>
+        </div>
+
+        <!-- CLICK SHIELD OVERLAY TO ABSORB POP-UP REDIRECTS -->
+        <div id="playerClickShield" onclick="dismissClickShield()" class="absolute inset-0 z-20 cursor-pointer hidden flex items-center justify-center bg-black/10">
+        </div>
+
+        <!-- STANDARD IFRAME FOR FULL COMPATIBILITY -->
+        <iframe id="modalTrailer" class="w-full h-full hidden" src="" title="Media Stream" frameborder="0" referrerpolicy="origin"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+          allowfullscreen></iframe>
+      </div>
+
+      <!-- SERVER SELECTION BAR (GENERIC LABELS ONLY) -->
+      <div id="serverBar" class="hidden bg-slate-900/90 border-b border-slate-800 px-5 py-2.5 flex items-center justify-between text-xs">
+        <span class="text-slate-400 font-bold flex items-center gap-1.5"><i class="fa-solid fa-server text-emerald-400"></i> Stream Server:</span>
+        <div class="flex items-center gap-2">
+          <button onclick="switchServer(1)" id="srv1" class="bg-emerald-600 text-white font-bold px-3 py-1 rounded transition">Server 1</button>
+          <button onclick="switchServer(2)" id="srv2" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3 py-1 rounded transition">Server 2</button>
+          <button onclick="switchServer(3)" id="srv3" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3 py-1 rounded transition">Server 3</button>
+        </div>
+      </div>
+
+      <!-- TV SEASONS / EPISODES -->
+      <div id="tvEpisodesSection" class="hidden bg-slate-900/80 border-b border-slate-800 p-4">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-list text-emerald-400 text-sm"></i>
+            <span class="text-white text-xs font-bold uppercase tracking-wider">Select Season & Episode</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <label class="text-xs text-slate-400 font-medium">Season:</label>
+            <select id="seasonSelect" onchange="loadSeasonEpisodes()" class="bg-slate-800 text-white text-xs font-bold rounded px-2.5 py-1 border border-slate-700 focus:outline-none focus:border-emerald-500 cursor-pointer"></select>
+          </div>
+        </div>
+        <div id="episodesList" class="flex gap-2 overflow-x-auto pb-2 max-h-36 flex-wrap no-scrollbar"></div>
+      </div>
+
+      <!-- MEDIA DETAILS -->
+      <div class="p-5 md:p-8">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
+          <div>
+            <span id="modalType" class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-400 bg-emerald-950/80 border border-emerald-800/80 px-2.5 py-1 rounded">STREAM</span>
+            <h3 id="modalTitle" class="text-xl md:text-3xl font-bold text-white mt-1.5">Title</h3>
+          </div>
+          <div class="flex items-center gap-3 text-xs md:text-sm">
+            <span id="modalRating" class="text-yellow-400 font-bold flex items-center gap-1"><i class="fa-solid fa-star"></i> 0.0</span>
+            <span id="modalYear" class="text-slate-400">2026</span>
+            <span class="bg-slate-800 text-slate-300 text-[10px] md:text-xs px-2 py-0.5 rounded border border-slate-700">4K ULTRA HD</span>
+          </div>
+        </div>
+
+        <p id="modalDescription" class="text-slate-300 text-xs md:text-sm mb-6 leading-relaxed">Description</p>
+
+        <!-- PLAY BUTTON -->
+        <div class="mb-8">
+          <button id="mainPlayBtn" onclick="startStream(1)" class="w-full ps-glow bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 hover:opacity-95 text-white font-black text-base md:text-lg py-3.5 px-8 rounded-xl flex items-center justify-center gap-3 transition transform active:scale-95">
+            <i class="fa-solid fa-play text-lg"></i> PLAY NOW
+          </button>
+        </div>
+
+        <!-- CAST GRID SECTION -->
+        <div id="castContainer" class="pt-6 border-t border-slate-800/80">
+          <h4 class="text-sm md:text-base font-bold uppercase tracking-wider text-emerald-400 mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-users text-lg"></i> Main Cast & Voice Actors
+          </h4>
+          
+          <div id="castList" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 max-h-[420px] overflow-y-auto pr-2">
+            <span class="text-slate-500 text-xs col-span-full">Loading cast info...</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="w-full py-6 border-t border-slate-900 bg-[#05070a] text-center">
+    <p class="text-xs text-slate-500 font-medium tracking-wide">zoroTV © 2015 - 2026</p>
+  </footer>
+
+  <script>
+    function acceptTerms() {
+      document.getElementById('termsModal').classList.add('hidden');
+      document.body.style.overflow = '';
+      document.body.classList.remove('overflow-hidden');
+    }
+
+    function openLogoModal() {
+      document.getElementById('logoModal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeLogoModal() {
+      document.getElementById('logoModal').classList.add('hidden');
+      if (document.getElementById('detailModal').classList.contains('hidden') && 
+          document.getElementById('termsModal').classList.contains('hidden')) {
+        document.body.style.overflow = '';
+      }
+    }
+
+    function dismissClickShield() {
+      const shield = document.getElementById('playerClickShield');
+      shield.classList.add('hidden');
+    }
+
+    const TMDB_KEY = "e15be33701bb1a97defdc01b86af2ed9"; 
+    const IMAGE_BASE = "https://image.tmdb.org/t/p/w342";
+    const BACKDROP_BASE = "https://image.tmdb.org/t/p/original";
+
+    let currentCategory = 'trending';
+    let currentPage = 1;
+    let catalogItems = [];
+    let activeMedia = { id: null, type: 'movie', title: '' };
+    let selectedSeason = 1;
+    let selectedEpisode = 1;
+    let searchDebounce = null;
+    let currentServer = 1;
+    let activeCategorySession = 0;
+    let isFetchingMore = false;
+
+    function cleanStr(str) {
+      if(!str) return "";
+      return String(str).replace(/'/g, "&#39;").replace(/"/g, "&quot;");
+    }
+
+    function isNotHentai(item) {
+      if (!item) return false;
+      const titleLower = String(item.title || item.name || '').toLowerCase();
+      const overviewLower = String(item.overview || '').toLowerCase();
+      const hentaiKeywords = ['hentai', 'ecchi', 'h-anime', 'hentai animation', 'erocool'];
+
+      for (let word of hentaiKeywords) {
+        if (titleLower.includes(word) || overviewLower.includes(word)) return false;
+      }
+      return true;
+    }
+
+    function switchCategoryTab(category) {
+      currentCategory = category;
+      currentPage = 1;
+      
+      ['trending', 'anime', 'movie', 'tv'].forEach(cat => {
+        const btn = document.getElementById(`tab_${cat}`);
+        if (btn) {
+          if (cat === category) {
+            btn.className = "cat-btn bg-emerald-600 text-white px-5 py-2 rounded-lg font-medium whitespace-nowrap";
+          } else {
+            btn.className = "cat-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-5 py-2 rounded-lg font-medium whitespace-nowrap";
+          }
+        }
+      });
+
+      fetchCatalog(category, 1, false);
+    }
+
+    async function fetchCatalog(category = 'trending', page = 1, append = false) {
+      if (isFetchingMore && append) return;
+      isFetchingMore = true;
+
+      const sessionId = ++activeCategorySession;
+      const grid = document.getElementById('contentGrid');
+      const loader = document.getElementById('infiniteLoader');
+
+      if (!append) {
+        grid.innerHTML = `<div class="col-span-full text-center py-16 text-emerald-400 font-semibold"><i class="fa-solid fa-spinner animate-spin text-3xl mb-3"></i><br>Loading zoroTV Library...</div>`;
+      } else {
+        loader.classList.remove('hidden');
+      }
+
+      let endpoints = [];
+      for (let p = page; p < page + 5; p++) {
+        if (category === 'trending') {
+          endpoints.push(`https://api.themoviedb.org/3/trending/all/day?api_key=${TMDB_KEY}&page=${p}`);
+        } else if (category === 'anime') {
+          endpoints.push(`https://api.themoviedb.org/3/discover/tv?api_key=${TMDB_KEY}&with_genres=16&with_original_language=ja&sort_by=popularity.desc&page=${p}`);
+          endpoints.push(`https://api.themoviedb.org/3/discover/movie?api_key=${TMDB_KEY}&with_genres=16&with_original_language=ja&sort_by=popularity.desc&page=${p}`);
+        } else if (category === 'movie') {
+          endpoints.push(`https://api.themoviedb.org/3/movie/popular?api_key=${TMDB_KEY}&page=${p}`);
+          endpoints.push(`https://api.themoviedb.org/3/movie/top_rated?api_key=${TMDB_KEY}&page=${p}`);
+        } else if (category === 'tv') {
+          endpoints.push(`https://api.themoviedb.org/3/tv/popular?api_key=${TMDB_KEY}&page=${p}`);
+          endpoints.push(`https://api.themoviedb.org/3/tv/top_rated?api_key=${TMDB_KEY}&page=${p}`);
+        }
+      }
+
+      try {
+        const responses = await Promise.all(endpoints.map(url => fetch(url).catch(() => null)));
+        if (sessionId !== activeCategorySession) return;
+
+        let fetchedBatch = [];
+        for (let res of responses) {
+          if (res && res.ok) {
+            const data = await res.json();
+            if (data.results) fetchedBatch.push(...data.results.filter(isNotHentai));
+          }
+        }
+
+        fetchedBatch = Array.from(new Map(fetchedBatch.map(item => [item.id, item])).values());
+
+        if (!append) {
+          catalogItems = fetchedBatch;
+          grid.innerHTML = '';
+          if (catalogItems.length > 0) setupHero(catalogItems[0], category);
+        } else {
+          catalogItems.push(...fetchedBatch);
+        }
+
+        if (catalogItems.length > 0) {
+          appendCardsToGrid(fetchedBatch, category);
+        } else if (!append) {
+          grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-500">No titles available.</div>`;
+        }
+      } catch (err) {
+        if (!append) grid.innerHTML = `<div class="col-span-full text-center py-12 text-red-500">Failed to load library.</div>`;
+      } finally {
+        isFetchingMore = false;
+        loader.classList.add('hidden');
+      }
+    }
+
+    // AUTOMATIC INFINITE SCROLL EVENT LISTENER
+    window.addEventListener('scroll', () => {
+      if (isFetchingMore) return;
+      const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+      if (scrollTop + clientHeight >= scrollHeight - 700) {
+        currentPage += 5;
+        fetchCatalog(currentCategory, currentPage, true);
+      }
+    });
+
+    function setupHero(item, fallbackType) {
+      const title = item.title || item.name || "Featured Title";
+      const desc = item.overview || "No overview available.";
+      const backdrop = item.backdrop_path ? BACKDROP_BASE + item.backdrop_path : 'https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=1600&auto=format&fit=crop';
+      
+      document.getElementById('heroTitle').innerText = title;
+      document.getElementById('heroDesc').innerText = desc;
+      document.getElementById('heroBg').style.backgroundImage = `url('${backdrop}')`;
+      
+      const mediaType = item.media_type || (fallbackType === 'anime' ? 'anime' : (item.first_air_date ? 'tv' : 'movie'));
+      document.getElementById('heroPlayBtn').onclick = () => openModal(item.id, mediaType);
+    }
+
+    function appendCardsToGrid(items, categoryType) {
+      const grid = document.getElementById('contentGrid');
+
+      items.forEach(item => {
+        if (!item.poster_path || !isNotHentai(item)) return;
+
+        const title = item.title || item.name || "Untitled";
+        const type = item.media_type || (categoryType === 'anime' ? 'anime' : (item.first_air_date ? 'tv' : 'movie'));
+        const year = (item.release_date || item.first_air_date || '2026').substring(0, 4);
+        const rating = item.vote_average ? item.vote_average.toFixed(1) : "N/A";
+        const poster = IMAGE_BASE + item.poster_path;
+
+        const card = document.createElement('div');
+        card.className = "group relative rounded-xl overflow-hidden bg-slate-900 border border-slate-800 transition duration-300 transform hover:-translate-y-2 cursor-pointer ps-card-glow active:scale-95";
+        card.onclick = () => openModal(item.id, type);
+
+        card.innerHTML = `
+          <div class="aspect-[2/3] w-full overflow-hidden relative">
+            <img src="${poster}" alt="${cleanStr(title)}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" loading="lazy" />
+            <div class="absolute top-2 left-2 bg-black/80 backdrop-blur-md text-[10px] font-bold text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/30 uppercase">
+              ${type}
+            </div>
+            <div class="absolute top-2 right-2 bg-black/80 backdrop-blur-md text-xs font-bold text-yellow-400 px-2 py-0.5 rounded flex items-center gap-1">
+              <i class="fa-solid fa-star text-[10px]"></i> ${rating}
+            </div>
+          </div>
+          <div class="p-3">
+            <h3 class="text-xs sm:text-sm font-bold text-white truncate group-hover:text-emerald-400 transition">${cleanStr(title)}</h3>
+            <p class="text-[10px] sm:text-xs text-slate-400 mt-1">${year}</p>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function debounceSearch() {
+      clearTimeout(searchDebounce);
+      searchDebounce = setTimeout(performSearch, 250);
+    }
+
+    async function performSearch() {
+      const query = document.getElementById('searchInput').value.trim();
+      if (!query) {
+        switchCategoryTab('trending');
+        return;
+      }
+
+      activeCategorySession++;
+      const grid = document.getElementById('contentGrid');
+      grid.innerHTML = `<div class="col-span-full text-center py-12 text-emerald-400 font-semibold"><i class="fa-solid fa-spinner animate-spin text-2xl mb-2"></i><br>Searching "${query}"...</div>`;
+
+      try {
+        const res = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${TMDB_KEY}&query=${encodeURIComponent(query)}&include_adult=true`);
+        const data = await res.json();
+        
+        if (data.results && data.results.length > 0) {
+          const safeResults = data.results.filter(isNotHentai);
+          catalogItems = safeResults;
+          grid.innerHTML = '';
+          appendCardsToGrid(safeResults, 'search');
+        } else {
+          grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-500">No titles found for "${query}".</div>`;
+        }
+      } catch (err) {
+        grid.innerHTML = `<div class="col-span-full text-center py-12 text-red-500">Search error.</div>`;
+      }
+    }
+
+    async function fetchCastInfo(id, endpoint) {
+      const castList = document.getElementById('castList');
+      castList.innerHTML = `<span class="text-slate-500 text-xs col-span-full py-4"><i class="fa-solid fa-spinner animate-spin text-emerald-500"></i> Loading cast details...</span>`;
+
+      try {
+        const res = await fetch(`https://api.themoviedb.org/3/${endpoint}/${id}/credits?api_key=${TMDB_KEY}`);
+        const data = await res.json();
+
+        if (data.cast && data.cast.length > 0) {
+          castList.innerHTML = '';
+          data.cast.slice(0, 12).forEach(actor => {
+            const profilePic = actor.profile_path ? (IMAGE_BASE + actor.profile_path) : 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=300&auto=format&fit=crop';
+            
+            const castCard = document.createElement('div');
+            castCard.className = "group bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg hover:border-emerald-500/60 transition duration-300";
+            
+            castCard.innerHTML = `
+              <div class="aspect-[3/4] w-full overflow-hidden bg-slate-950 relative">
+                <img src="${profilePic}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" alt="${cleanStr(actor.name)}" loading="lazy" />
+              </div>
+              <div class="p-2.5 text-left">
+                <p class="text-white text-xs font-bold truncate group-hover:text-emerald-400 transition">${cleanStr(actor.name)}</p>
+                <p class="text-slate-400 text-[10px] truncate mt-0.5">${cleanStr(actor.character) || 'Cast / Voice'}</p>
+              </div>
+            `;
+            castList.appendChild(castCard);
+          });
+        } else {
+          castList.innerHTML = `<span class="text-slate-500 text-xs col-span-full py-4">No cast information available.</span>`;
+        }
+      } catch (e) {
+        castList.innerHTML = `<span class="text-slate-500 text-xs col-span-full py-4">Failed to load cast.</span>`;
+      }
+    }
+
+    async function fetchTrailerKey(id, mediaEndpoint) {
+      try {
+        let res = await fetch(`https://api.themoviedb.org/3/${mediaEndpoint}/${id}/videos?api_key=${TMDB_KEY}&language=en-US`);
+        let data = await res.json();
+        
+        let videos = (data && data.results) ? data.results : [];
+
+        if (videos.length === 0) {
+          res = await fetch(`https://api.themoviedb.org/3/${mediaEndpoint}/${id}/videos?api_key=${TMDB_KEY}`);
+          data = await res.json();
+          videos = (data && data.results) ? data.results : [];
+        }
+
+        if (videos.length > 0) {
+          const youtubeVideos = videos.filter(v => v.site === 'YouTube');
+          const officialTrailer = youtubeVideos.find(v => v.type === 'Trailer' && v.official) ||
+                                  youtubeVideos.find(v => v.type === 'Trailer') ||
+                                  youtubeVideos.find(v => v.type === 'Teaser') ||
+                                  youtubeVideos[0];
+          if (officialTrailer) return officialTrailer.key;
+        }
+      } catch (e) {}
+      return null;
+    }
+
+    async function openModal(id, type) {
+      document.body.style.overflow = 'hidden';
+
+      let item = catalogItems.find(i => i.id === id);
+      const isTvOrAnime = (type === 'tv' || type === 'anime' || (item && !!item.first_air_date));
+      const mediaEndpoint = isTvOrAnime ? 'tv' : 'movie';
+
+      if (!item) {
+        try {
+          const res = await fetch(`https://api.themoviedb.org/3/${mediaEndpoint}/${id}?api_key=${TMDB_KEY}`);
+          item = await res.json();
+        } catch(e) {}
+      }
+
+      const title = item ? (item.title || item.name || "Untitled") : "Title";
+      const desc = item ? (item.overview || "No description available.") : "No description available.";
+      const rating = item && item.vote_average ? item.vote_average.toFixed(1) : "N/A";
+      const year = item ? (item.release_date || item.first_air_date || '2026').substring(0, 4) : "2026";
+
+      activeMedia = { id, type: mediaEndpoint, title };
+      selectedSeason = 1;
+      selectedEpisode = 1;
+
+      document.getElementById('modalTitle').innerText = title;
+      document.getElementById('modalType').innerText = isTvOrAnime ? 'TV / ANIME' : 'MOVIE';
+      document.getElementById('modalRating').innerHTML = `<i class="fa-solid fa-star"></i> ${rating}`;
+      document.getElementById('modalYear').innerText = year;
+      document.getElementById('modalDescription').innerText = desc;
+      document.getElementById('serverBar').classList.add('hidden');
+
+      fetchCastInfo(id, mediaEndpoint);
+
+      const tvSection = document.getElementById('tvEpisodesSection');
+      if (isTvOrAnime) {
+        tvSection.classList.remove('hidden');
+        await fetchTvDetailsAndSeasons(id);
+      } else {
+        tvSection.classList.add('hidden');
+      }
+
+      const modal = document.getElementById('detailModal');
+      const trailerFrame = document.getElementById('modalTrailer');
+      const loader = document.getElementById('trailerLoader');
+
+      trailerFrame.classList.add('hidden');
+      trailerFrame.src = "";
+      loader.classList.remove('hidden');
+      document.getElementById('loaderText').innerText = "Loading Stream...";
+      
+      modal.classList.remove('hidden');
+
+      const videoKey = await fetchTrailerKey(id, mediaEndpoint);
+
+      if (videoKey) {
+        trailerFrame.src = `https://www.youtube-nocookie.com/embed/${videoKey}?autoplay=1&mute=0&controls=1`;
+        trailerFrame.classList.remove('hidden');
+        loader.classList.add('hidden');
+      } else {
+        loader.innerHTML = `
+          <div class="flex flex-col items-center gap-2">
+            <i class="fa-solid fa-film text-3xl text-slate-600"></i>
+            <span class="text-sm text-slate-300 font-bold">Trailer Unavailable</span>
+            <span class="text-xs text-slate-500">Click "PLAY NOW" below to start streaming.</span>
+          </div>
+        `;
+      }
+    }
+
+    async function fetchTvDetailsAndSeasons(tvId) {
+      const seasonSelect = document.getElementById('seasonSelect');
+      seasonSelect.innerHTML = `<option>Loading...</option>`;
+
+      try {
+        const res = await fetch(`https://api.themoviedb.org/3/tv/${tvId}?api_key=${TMDB_KEY}`);
+        const data = await res.json();
+
+        seasonSelect.innerHTML = '';
+        if (data.seasons && data.seasons.length > 0) {
+          const validSeasons = data.seasons.filter(s => s.season_number > 0 && s.episode_count > 0);
+          validSeasons.forEach(s => {
+            const option = document.createElement('option');
+            option.value = s.season_number;
+            option.innerText = `Season ${s.season_number} (${s.episode_count} Episodes)`;
+            seasonSelect.appendChild(option);
+          });
+        } else {
+          seasonSelect.innerHTML = `<option value="1">Season 1</option>`;
+        }
+        selectedSeason = seasonSelect.value || 1;
+        selectedEpisode = 1;
+        await loadSeasonEpisodes();
+      } catch (e) {
+        seasonSelect.innerHTML = `<option value="1">Season 1</option>`;
+        selectedSeason = 1;
+        selectedEpisode = 1;
+        await loadSeasonEpisodes();
+      }
+    }
+
+    async function loadSeasonEpisodes() {
+      selectedSeason = document.getElementById('seasonSelect').value || 1;
+      selectedEpisode = 1;
+      const episodesList = document.getElementById('episodesList');
+      episodesList.innerHTML = `<div class="text-emerald-400 text-xs py-2"><i class="fa-solid fa-spinner animate-spin"></i> Fetching episodes...</div>`;
+
+      try {
+        const res = await fetch(`https://api.themoviedb.org/3/tv/${activeMedia.id}/season/${selectedSeason}?api_key=${TMDB_KEY}`);
+        const data = await res.json();
+
+        episodesList.innerHTML = '';
+        if (data.episodes && data.episodes.length > 0) {
+          data.episodes.forEach(ep => {
+            const isSelected = (ep.episode_number === selectedEpisode);
+            const epBtn = document.createElement('button');
+            epBtn.className = `ep-btn text-xs font-semibold px-3 py-2 rounded-lg border text-left transition flex items-center gap-2 truncate max-w-[210px] ${
+              isSelected ? 'bg-emerald-600 border-emerald-500 text-white font-bold' : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'
+            }`;
+            epBtn.id = `epBtn_${ep.episode_number}`;
+            epBtn.onclick = () => selectEpisode(ep.episode_number);
+
+            epBtn.innerHTML = `
+              <span class="bg-black/40 px-1.5 py-0.5 rounded text-[10px] text-emerald-300">E${ep.episode_number}</span>
+              <span class="truncate">${cleanStr(ep.name) || 'Episode ' + ep.episode_number}</span>
+            `;
+            episodesList.appendChild(epBtn);
+          });
+        }
+      } catch (err) {
+        episodesList.innerHTML = `<div class="text-red-400 text-xs py-2">Failed to load episodes.</div>`;
+      }
+    }
+
+    function selectEpisode(epNum) {
+      selectedEpisode = epNum;
+      document.querySelectorAll('.ep-btn').forEach(btn => {
+        btn.className = "ep-btn text-xs font-semibold px-3 py-2 rounded-lg border text-left transition flex items-center gap-2 truncate max-w-[210px] bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700";
+      });
+      const activeBtn = document.getElementById(`epBtn_${epNum}`);
+      if (activeBtn) activeBtn.className = "ep-btn text-xs font-semibold px-3 py-2 rounded-lg border text-left transition flex items-center gap-2 truncate max-w-[210px] bg-emerald-600 border-emerald-500 text-white font-bold";
+      startStream(currentServer);
+    }
+
+    function startStream(serverNum = 1) {
+      if (!activeMedia.id) return;
+      currentServer = serverNum;
+
+      const trailerFrame = document.getElementById('modalTrailer');
+      const loader = document.getElementById('trailerLoader');
+      const serverBar = document.getElementById('serverBar');
+      const shield = document.getElementById('playerClickShield');
+
+      serverBar.classList.remove('hidden');
+      updateServerButtons(serverNum);
+
+      shield.classList.remove('hidden');
+
+      let streamUrl = "";
+      const isMovie = (activeMedia.type === 'movie');
+
+      if (serverNum === 1) {
+        streamUrl = isMovie 
+          ? `https://vidsrc.me/embed/movie?tmdb=${activeMedia.id}`
+          : `https://vidsrc.me/embed/tv?tmdb=${activeMedia.id}&season=${selectedSeason}&episode=${selectedEpisode}`;
+      } else if (serverNum === 2) {
+        streamUrl = isMovie 
+          ? `https://vidsrc.pro/embed/movie/${activeMedia.id}`
+          : `https://vidsrc.pro/embed/tv/${activeMedia.id}/${selectedSeason}/${selectedEpisode}`;
+      } else if (serverNum === 3) {
+        streamUrl = isMovie 
+          ? `https://vidsrc.cc/v2/embed/movie/${activeMedia.id}`
+          : `https://vidsrc.cc/v2/embed/tv/${activeMedia.id}/${selectedSeason}/${selectedEpisode}`;
+      }
+
+      trailerFrame.src = streamUrl;
+      loader.classList.add('hidden');
+      trailerFrame.classList.remove('hidden');
+    }
+
+    function switchServer(num) {
+      startStream(num);
+    }
+
+    function updateServerButtons(num) {
+      [1, 2, 3].forEach(n => {
+        const btn = document.getElementById(`srv${n}`);
+        if (n === num) btn.className = "bg-emerald-600 text-white font-bold px-3 py-1 rounded transition";
+        else btn.className = "bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3 py-1 rounded transition";
+      });
+    }
+
+    // STRICT CLEANUP CLOSE FUNCTION TO PREVENT UI FREEZE
+    function closeModal() {
+      const modal = document.getElementById('detailModal');
+      const trailerFrame = document.getElementById('modalTrailer');
+      
+      modal.classList.add('hidden');
+      trailerFrame.src = '';
+      trailerFrame.classList.add('hidden');
+      
+      document.getElementById('serverBar').classList.add('hidden');
+      document.getElementById('playerClickShield').classList.add('hidden');
+
+      // Restore scrollable state
+      document.body.style.overflow = '';
+      document.body.classList.remove('overflow-hidden');
+    }
+
+    // Initialize Catalog
+    fetchCatalog('trending', 1, false);
+  </script>
+</body>
+</html>
