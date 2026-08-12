@@ -418,6 +418,18 @@
       return true;
     }
 
+    // Helper: Determine accurate TMDB endpoint ('movie' vs 'tv') regardless of Anime tab
+    function getRealMediaType(item, typeHint) {
+      if (item && item.media_type) {
+        if (item.media_type === 'tv' || item.media_type === 'movie') return item.media_type;
+      }
+      if (item) {
+        if (item.first_air_date && !item.release_date) return 'tv';
+        if (item.release_date && !item.first_air_date) return 'movie';
+      }
+      return (typeHint === 'tv') ? 'tv' : 'movie';
+    }
+
     function switchCategoryTab(category) {
       currentCategory = category;
       currentPage = 1;
@@ -450,8 +462,9 @@
         loader.classList.remove('hidden');
       }
 
+      // Fetch 2 pages per batch to prevent hitting TMDB API rate-limits
       let endpoints = [];
-      for (let p = page; p < page + 10; p++) {
+      for (let p = page; p < page + 2; p++) {
         if (category === 'trending') {
           endpoints.push(`https://api.themoviedb.org/3/trending/all/day?api_key=${TMDB_KEY}&page=${p}`);
         } else if (category === 'anime') {
@@ -459,10 +472,8 @@
           endpoints.push(`https://api.themoviedb.org/3/discover/movie?api_key=${TMDB_KEY}&with_genres=16&with_original_language=ja&sort_by=popularity.desc&page=${p}`);
         } else if (category === 'movie') {
           endpoints.push(`https://api.themoviedb.org/3/movie/popular?api_key=${TMDB_KEY}&page=${p}`);
-          endpoints.push(`https://api.themoviedb.org/3/movie/top_rated?api_key=${TMDB_KEY}&page=${p}`);
         } else if (category === 'tv') {
           endpoints.push(`https://api.themoviedb.org/3/tv/popular?api_key=${TMDB_KEY}&page=${p}`);
-          endpoints.push(`https://api.themoviedb.org/3/tv/top_rated?api_key=${TMDB_KEY}&page=${p}`);
         }
       }
 
@@ -505,7 +516,7 @@
       if (isFetchingMore) return;
       const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
       if (scrollTop + clientHeight >= scrollHeight - 700) {
-        currentPage += 10;
+        currentPage += 2;
         fetchCatalog(currentCategory, currentPage, true);
       }
     });
@@ -519,8 +530,8 @@
       document.getElementById('heroDesc').innerText = desc;
       document.getElementById('heroBg').style.backgroundImage = `url('${backdrop}')`;
       
-      const mediaType = item.media_type || (fallbackType === 'anime' ? 'anime' : (item.first_air_date ? 'tv' : 'movie'));
-      document.getElementById('heroPlayBtn').onclick = () => openModal(item.id, mediaType);
+      const realType = getRealMediaType(item, fallbackType);
+      document.getElementById('heroPlayBtn').onclick = () => openModal(item.id, realType);
     }
 
     function appendCardsToGrid(items, categoryType) {
@@ -530,20 +541,20 @@
         if (!item.poster_path || !isNotHentai(item)) return;
 
         const title = item.title || item.name || "Untitled";
-        const type = item.media_type || (categoryType === 'anime' ? 'anime' : (item.first_air_date ? 'tv' : 'movie'));
+        const realType = getRealMediaType(item, categoryType);
         const year = (item.release_date || item.first_air_date || '2026').substring(0, 4);
         const rating = item.vote_average ? item.vote_average.toFixed(1) : "N/A";
         const poster = IMAGE_BASE + item.poster_path;
 
         const card = document.createElement('div');
         card.className = "group relative rounded-xl overflow-hidden bg-slate-900 border border-slate-800 transition duration-300 transform hover:-translate-y-2 cursor-pointer ps-card-glow active:scale-95";
-        card.onclick = () => openModal(item.id, type);
+        card.onclick = () => openModal(item.id, realType);
 
         card.innerHTML = `
           <div class="aspect-[2/3] w-full overflow-hidden relative">
             <img src="${poster}" alt="${cleanStr(title)}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" loading="lazy" />
             <div class="absolute top-2 left-2 bg-black/80 backdrop-blur-md text-[10px] font-bold text-amber-400 px-2 py-0.5 rounded border border-amber-500/30 uppercase">
-              ${type}
+              ${realType}
             </div>
             <div class="absolute top-2 right-2 bg-black/80 backdrop-blur-md text-xs font-bold text-yellow-400 px-2 py-0.5 rounded flex items-center gap-1">
               <i class="fa-solid fa-star text-[10px]"></i> ${rating}
@@ -654,8 +665,7 @@
       document.body.style.overflow = 'hidden';
 
       let item = catalogItems.find(i => i.id === id);
-      const isTvOrAnime = (type === 'tv' || type === 'anime' || (item && !!item.first_air_date));
-      const mediaEndpoint = isTvOrAnime ? 'tv' : 'movie';
+      const mediaEndpoint = getRealMediaType(item, type);
 
       if (!item) {
         try {
@@ -674,7 +684,7 @@
       selectedEpisode = 1;
 
       document.getElementById('modalTitle').innerText = title;
-      document.getElementById('modalType').innerText = isTvOrAnime ? 'TV / ANIME' : 'MOVIE';
+      document.getElementById('modalType').innerText = (mediaEndpoint === 'tv') ? 'TV / ANIME' : 'MOVIE';
       document.getElementById('modalRating').innerHTML = `<i class="fa-solid fa-star"></i> ${rating}`;
       document.getElementById('modalYear').innerText = year;
       document.getElementById('modalDescription').innerText = desc;
@@ -685,7 +695,7 @@
       fetchCastInfo(id, mediaEndpoint);
 
       const tvSection = document.getElementById('tvEpisodesSection');
-      if (isTvOrAnime) {
+      if (mediaEndpoint === 'tv') {
         tvSection.classList.remove('hidden');
         await fetchTvDetailsAndSeasons(id);
       } else {
@@ -852,7 +862,6 @@
       const trailerFrame = document.getElementById('modalTrailer');
       const loader = document.getElementById('trailerLoader');
       const serverBar = document.getElementById('serverBar');
-      const shield = document.getElementById('playerClickShield');
       const banner = document.getElementById('playingEpisodeBanner');
       const bannerText = document.getElementById('playingEpisodeText');
       const nextBtn = document.getElementById('nextEpisodeBtn');
@@ -874,32 +883,29 @@
       let targetSeason = selectedSeason;
       let targetEpisode = selectedEpisode;
 
-      if (!isMovie && selectedEpisode > 100) {
-        targetSeason = 1;
-      }
-
       let streamUrl = "";
 
+      // HIGH-COMPATIBILITY STREAM ENDPOINTS
       if (serverNum === 1) {
         streamUrl = isMovie 
           ? `https://vidsrc.pro/embed/movie/${activeMedia.id}`
           : `https://vidsrc.pro/embed/tv/${activeMedia.id}/${targetSeason}/${targetEpisode}`;
       } else if (serverNum === 2) {
         streamUrl = isMovie 
-          ? `https://player.videasy.net/movie/${activeMedia.id}`
-          : `https://player.videasy.net/tv/${activeMedia.id}/${targetSeason}/${targetEpisode}`;
+          ? `https://vidsrc.cc/v2/embed/movie/${activeMedia.id}`
+          : `https://vidsrc.cc/v2/embed/tv/${activeMedia.id}/${targetSeason}/${targetEpisode}`;
       } else if (serverNum === 3) {
         streamUrl = isMovie
           ? `https://vidlink.pro/movie/${activeMedia.id}`
           : `https://vidlink.pro/tv/${activeMedia.id}/${targetSeason}/${targetEpisode}`;
       } else if (serverNum === 4) {
         streamUrl = isMovie
-          ? `https://player.autoembed.cc/embed/movie/${activeMedia.id}`
-          : `https://player.autoembed.cc/embed/tv/${activeMedia.id}/${targetSeason}/${targetEpisode}`;
+          ? `https://vidsrc.me/embed/movie?tmdb=${activeMedia.id}`
+          : `https://vidsrc.me/embed/tv?tmdb=${activeMedia.id}&season=${targetSeason}&episode=${targetEpisode}`;
       } else if (serverNum === 5) {
         streamUrl = isMovie
-          ? `https://vidsrc.cc/v2/embed/movie/${activeMedia.id}`
-          : `https://vidsrc.cc/v2/embed/tv/${activeMedia.id}/${targetSeason}/${targetEpisode}`;
+          ? `https://2embed.cc/embed/${activeMedia.id}`
+          : `https://2embed.cc/embedtv/${activeMedia.id}&s=${targetSeason}&e=${targetEpisode}`;
       }
 
       trailerFrame.src = streamUrl;
