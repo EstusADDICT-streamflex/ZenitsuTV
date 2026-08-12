@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>zoroTV - Stream Movies, TV Shows & Anime</title>
+  <title>ZenitsuTV - Stream Movies, TV Shows & Anime</title>
   
   <!-- PRECONNECTS FOR INSTANT DNS RESOLUTION -->
   <link rel="dns-prefetch" href="//api.themoviedb.org" />
@@ -29,7 +29,7 @@
       font-family: 'Orbitron', sans-serif;
     }
     .animated-gradient-text {
-      background: linear-gradient(-45deg, #10b981, #06b6d4, #3b82f6, #a855f7);
+      background: linear-gradient(-45deg, #f59e0b, #eab308, #ef4444, #f97316);
       background-size: 300% 300%;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -40,10 +40,10 @@
       50% { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
     }
-    .ps-glow { box-shadow: 0 0 25px rgba(16, 185, 129, 0.35); }
+    .ps-glow { box-shadow: 0 0 25px rgba(245, 158, 11, 0.35); }
     .ps-card-glow:hover {
-      box-shadow: 0 0 30px rgba(16, 185, 129, 0.6), 0 0 10px rgba(6, 182, 212, 0.5);
-      border-color: rgba(16, 185, 129, 0.8);
+      box-shadow: 0 0 30px rgba(245, 158, 11, 0.6), 0 0 10px rgba(234, 179, 8, 0.5);
+      border-color: rgba(245, 158, 11, 0.8);
     }
     .glass-nav {
       background: rgba(11, 15, 25, 0.85);
@@ -56,9 +56,9 @@
       backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.1);
     }
-    .zoro-bg-card {
+    .zenitsu-bg-card {
       background: linear-gradient(135deg, rgba(7, 9, 14, 0.90) 0%, rgba(15, 23, 42, 0.82) 100%), 
-                  url('https://c.tenor.com/2s_1bU8M3sQAAAAC/one-piece-zoro.gif');
+                  url('https://c.tenor.com/e7p0L1o72tIAAAAC/zenitsu-demon-slayer.gif');
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -66,17 +66,17 @@
     ::-webkit-scrollbar { width: 8px; height: 8px; }
     ::-webkit-scrollbar-track { background: #07090e; }
     ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #10b981; }
+    ::-webkit-scrollbar-thumb:hover { background: #f59e0b; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between selection:bg-emerald-600 selection:text-white">
+<body class="min-h-screen flex flex-col justify-between selection:bg-amber-500 selection:text-black">
 
   <!-- ENTRY TERMS POPUP MODAL -->
   <div id="termsModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md">
-    <div class="relative glass-panel w-full max-w-lg rounded-2xl p-6 md:p-8 border border-emerald-500/40 text-center shadow-2xl">
-      <div class="w-16 h-16 bg-emerald-600/20 border border-emerald-500/50 rounded-full flex items-center justify-center mx-auto mb-5 text-emerald-400 text-2xl">
+    <div class="relative glass-panel w-full max-w-lg rounded-2xl p-6 md:p-8 border border-amber-500/40 text-center shadow-2xl">
+      <div class="w-16 h-16 bg-amber-500/20 border border-amber-500/50 rounded-full flex items-center justify-center mx-auto mb-5 text-amber-400 text-2xl">
         <i class="fa-solid fa-shield-halved"></i>
       </div>
       
@@ -86,7 +86,7 @@
       
       <div class="text-slate-300 text-sm leading-relaxed space-y-3 mb-6 bg-slate-900/60 p-4 rounded-xl border border-slate-800 text-left">
         <p class="font-medium">
-          Welcome to <strong>zoroTV</strong>. Before accessing our library, please review and accept our usage policy:
+          Welcome to <strong>ZenitsuTV</strong>. Before accessing our library, please review and accept our usage policy:
         </p>
         <ul class="list-disc list-inside space-y-1 text-slate-400 text-xs">
           <li>We only allow <strong>personal, non-commercial use</strong>.</li>
@@ -94,7 +94,7 @@
         </ul>
       </div>
 
-      <button onclick="acceptTerms()" class="w-full ps-glow bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-3.5 px-6 rounded-xl text-sm transition transform active:scale-95 flex items-center justify-center gap-2">
+      <button onclick="acceptTerms()" class="w-full ps-glow bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-black font-bold py-3.5 px-6 rounded-xl text-sm transition transform active:scale-95 flex items-center justify-center gap-2">
         <i class="fa-solid fa-check"></i> I understand and accept all the terms and conditions
       </button>
     </div>
@@ -102,21 +102,21 @@
 
   <!-- LOGO INFORMATION MODAL -->
   <div id="logoModal" onclick="if(event.target === this) closeLogoModal()" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
-    <div class="relative glass-panel w-full max-w-lg rounded-2xl p-6 md:p-8 border border-emerald-500/40 text-left shadow-2xl">
+    <div class="relative glass-panel w-full max-w-lg rounded-2xl p-6 md:p-8 border border-amber-500/40 text-left shadow-2xl">
       <button onclick="closeLogoModal()" class="absolute top-4 right-4 z-20 w-8 h-8 bg-slate-900/90 hover:bg-slate-800 text-white rounded-full flex items-center justify-center transition border border-slate-700">
         <i class="fa-solid fa-xmark text-sm"></i>
       </button>
 
       <div class="flex items-center gap-3 mb-4">
-        <div class="w-10 h-10 bg-emerald-600/20 border border-emerald-500/50 rounded-full flex items-center justify-center text-emerald-400 text-lg">
-          <i class="fa-solid fa-sword"></i>
+        <div class="w-10 h-10 bg-amber-500/20 border border-amber-500/50 rounded-full flex items-center justify-center text-amber-400 text-lg">
+          <i class="fa-solid fa-bolt"></i>
         </div>
-        <h3 class="text-xl font-bold text-white brand-font tracking-wide">About zoroTV</h3>
+        <h3 class="text-xl font-bold text-white brand-font tracking-wide">About ZenitsuTV</h3>
       </div>
 
       <div class="text-slate-300 text-xs md:text-sm leading-relaxed space-y-3 bg-slate-900/60 p-4 rounded-xl border border-slate-800">
         <p>
-          At <strong>zoroTV</strong>, our sole purpose and objective is to provide high-quality entertainment with access to thousands of Anime, Movies, and TV Shows worldwide.
+          At <strong>ZenitsuTV</strong>, our sole purpose and objective is to provide high-quality entertainment with access to thousands of Anime, Movies, and TV Shows worldwide.
         </p>
         <p>
           We deeply respect content creators, rights holders, and intellectual property owners. Our platform does not intend to infringe, harm, or violate anyone’s rights or business models.
@@ -136,15 +136,15 @@
       <!-- Logo & Navigation -->
       <div class="flex items-center gap-8">
         <button onclick="openLogoModal()" class="brand-font text-xl md:text-3xl font-extrabold tracking-wider flex items-center gap-2 animated-gradient-text focus:outline-none hover:opacity-90 transition">
-          <i class="fa-solid fa-circle-play text-emerald-500 text-lg md:text-2xl"></i> zoroTV
+          <i class="fa-solid fa-bolt text-amber-400 text-lg md:text-2xl"></i> ZenitsuTV
         </button>
         
         <nav class="hidden md:flex items-center gap-6 text-sm font-semibold text-gray-300">
-          <button onclick="switchCategoryTab('trending')" class="hover:text-emerald-400 transition">Trending</button>
-          <button onclick="switchCategoryTab('anime')" class="hover:text-emerald-400 transition">Anime</button>
-          <button onclick="switchCategoryTab('movie')" class="hover:text-emerald-400 transition">Movies</button>
-          <button onclick="switchCategoryTab('tv')" class="hover:text-emerald-400 transition">TV Shows</button>
-          <a href="#aboutSection" class="hover:text-emerald-400 transition">About Us</a>
+          <button onclick="switchCategoryTab('trending')" class="hover:text-amber-400 transition">Trending</button>
+          <button onclick="switchCategoryTab('anime')" class="hover:text-amber-400 transition">Anime</button>
+          <button onclick="switchCategoryTab('movie')" class="hover:text-amber-400 transition">Movies</button>
+          <button onclick="switchCategoryTab('tv')" class="hover:text-amber-400 transition">TV Shows</button>
+          <a href="#aboutSection" class="hover:text-amber-400 transition">About Us</a>
         </nav>
       </div>
 
@@ -152,7 +152,7 @@
       <div class="flex items-center gap-3">
         <div class="relative">
           <input id="searchInput" oninput="debounceSearch()" type="text" placeholder="Search titles..." 
-            class="bg-slate-900/90 text-sm text-white rounded-full pl-10 pr-4 py-2 w-36 sm:w-64 border border-slate-700 focus:outline-none focus:border-emerald-500 transition duration-200">
+            class="bg-slate-900/90 text-sm text-white rounded-full pl-10 pr-4 py-2 w-36 sm:w-64 border border-slate-700 focus:outline-none focus:border-amber-500 transition duration-200">
           <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-sm"></i>
         </div>
       </div>
@@ -170,8 +170,8 @@
       <div class="absolute inset-0 bg-gradient-to-r from-[#07090e] via-[#07090e]/80 to-transparent"></div>
 
       <div class="relative max-w-7xl mx-auto h-full px-6 flex flex-col justify-end pb-12">
-        <div class="inline-flex items-center gap-2 bg-emerald-600/30 border border-emerald-500/50 rounded-full px-3 py-1 text-xs text-emerald-300 font-semibold mb-3 w-fit">
-          <i class="fa-solid fa-fire"></i> FEATURED ON zoroTV
+        <div class="inline-flex items-center gap-2 bg-amber-500/30 border border-amber-500/50 rounded-full px-3 py-1 text-xs text-amber-300 font-semibold mb-3 w-fit">
+          <i class="fa-solid fa-fire"></i> FEATURED ON ZenitsuTV
         </div>
         <h1 id="heroTitle" class="brand-font text-2xl md:text-5xl font-black text-white mb-3 tracking-wide drop-shadow-lg">
           Loading Featured...
@@ -181,7 +181,7 @@
         </p>
 
         <div class="flex items-center gap-4">
-          <button id="heroPlayBtn" class="ps-glow bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold px-6 py-3 rounded-xl flex items-center gap-2 text-sm md:text-base transition transform hover:scale-105">
+          <button id="heroPlayBtn" class="ps-glow bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-black font-bold px-6 py-3 rounded-xl flex items-center gap-2 text-sm md:text-base transition transform hover:scale-105">
             <i class="fa-solid fa-play"></i> Watch Trailer & Info
           </button>
         </div>
@@ -191,7 +191,7 @@
     <!-- CATEGORY FILTER TABS -->
     <div class="max-w-7xl mx-auto px-6 mb-6">
       <div class="flex items-center gap-3 overflow-x-auto pb-2 text-sm no-scrollbar">
-        <button onclick="switchCategoryTab('trending')" id="tab_trending" class="cat-btn bg-emerald-600 text-white px-5 py-2 rounded-lg font-medium whitespace-nowrap">🔥 Popular & Trending</button>
+        <button onclick="switchCategoryTab('trending')" id="tab_trending" class="cat-btn bg-amber-500 text-black font-bold px-5 py-2 rounded-lg whitespace-nowrap">🔥 Popular & Trending</button>
         <button onclick="switchCategoryTab('anime')" id="tab_anime" class="cat-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-5 py-2 rounded-lg font-medium whitespace-nowrap">⛩️ Anime Collection</button>
         <button onclick="switchCategoryTab('movie')" id="tab_movie" class="cat-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-5 py-2 rounded-lg font-medium whitespace-nowrap">🎬 Movies Library</button>
         <button onclick="switchCategoryTab('tv')" id="tab_tv" class="cat-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-5 py-2 rounded-lg font-medium whitespace-nowrap">📺 TV Shows</button>
@@ -201,7 +201,7 @@
     <!-- CONTENT GRID ROW -->
     <section class="max-w-7xl mx-auto px-6 mb-16">
       <h2 id="sectionTitle" class="text-xl md:text-2xl font-bold text-white mb-6 flex items-center gap-2">
-        <span class="w-1.5 h-6 bg-emerald-500 rounded-full"></span> zoroTV Library
+        <span class="w-1.5 h-6 bg-amber-500 rounded-full"></span> ZenitsuTV Library
       </h2>
 
       <div id="contentGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-5">
@@ -210,37 +210,37 @@
 
       <!-- INFINITE SCROLL LOADING INDICATOR -->
       <div id="infiniteLoader" class="mt-10 text-center py-6 hidden">
-        <div class="inline-flex items-center gap-3 text-emerald-400 font-semibold text-sm">
+        <div class="inline-flex items-center gap-3 text-amber-400 font-semibold text-sm">
           <i class="fa-solid fa-spinner animate-spin text-2xl"></i> Auto-loading more titles...
         </div>
       </div>
     </section>
 
-    <!-- ABOUT SECTION WITH ZORO GIF BACKGROUND -->
+    <!-- ABOUT SECTION WITH ZENITSU GIF BACKGROUND -->
     <section id="aboutSection" class="max-w-7xl mx-auto px-4 md:px-6 mb-12">
-      <div class="zoro-bg-card rounded-xl md:rounded-2xl p-6 sm:p-8 md:p-12 border border-emerald-500/30 relative overflow-hidden shadow-2xl">
+      <div class="zenitsu-bg-card rounded-xl md:rounded-2xl p-6 sm:p-8 md:p-12 border border-amber-500/30 relative overflow-hidden shadow-2xl">
         
         <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 md:gap-6 mb-4 md:mb-6">
           <div>
-            <span class="text-[10px] sm:text-xs font-bold text-emerald-400 uppercase tracking-widest bg-emerald-950/80 border border-emerald-800/80 px-3 py-1 rounded-full">
+            <span class="text-[10px] sm:text-xs font-bold text-amber-400 uppercase tracking-widest bg-amber-950/80 border border-amber-800/80 px-3 py-1 rounded-full">
               Established 2015
             </span>
             <h3 class="brand-font text-2xl sm:text-3xl md:text-4xl font-extrabold text-white mt-3 tracking-wider drop-shadow-md">
-              About zoroTV
+              About ZenitsuTV
             </h3>
           </div>
           
-          <div class="flex items-center gap-2 text-emerald-400 text-xs md:text-sm font-semibold bg-black/60 px-4 py-2 rounded-lg border border-emerald-500/20">
-            <i class="fa-solid fa-bolt text-emerald-400"></i> Anime, Movies & TV Shows
+          <div class="flex items-center gap-2 text-amber-400 text-xs md:text-sm font-semibold bg-black/60 px-4 py-2 rounded-lg border border-amber-500/20">
+            <i class="fa-solid fa-bolt text-amber-400"></i> Anime, Movies & TV Shows
           </div>
         </div>
 
         <div class="text-slate-200 text-xs sm:text-sm md:text-base leading-relaxed space-y-4 max-w-3xl drop-shadow">
           <p>
-            Welcome to <strong>zoroTV</strong>! Established back in <strong>2015</strong>, our platform is built for anime enthusiasts and movie lovers worldwide.
+            Welcome to <strong>ZenitsuTV</strong>! Established back in <strong>2015</strong>, our platform is built for anime enthusiasts and movie lovers worldwide.
           </p>
           <p>
-            With an expansive collection of <strong>Anime series, Movies, and TV Shows</strong>, zoroTV gives you instant access to lightning-fast servers, HD streams, and updated episodes without limits.
+            With an expansive collection of <strong>Anime series, Movies, and TV Shows</strong>, ZenitsuTV gives you lightning-fast access to servers, HD streams, and updated episodes without limits.
           </p>
         </div>
       </div>
@@ -250,7 +250,7 @@
 
   <!-- DETAIL & STREAM MODAL -->
   <div id="detailModal" onclick="if(event.target === this) closeModal()" class="fixed inset-0 z-50 hidden flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md overflow-y-auto">
-    <div class="relative glass-panel w-full max-w-4xl max-h-[92vh] rounded-2xl overflow-y-auto shadow-2xl border border-emerald-500/30 my-auto">
+    <div class="relative glass-panel w-full max-w-4xl max-h-[92vh] rounded-2xl overflow-y-auto shadow-2xl border border-amber-500/30 my-auto">
       
       <button onclick="closeModal()" class="absolute top-3 right-3 z-30 w-9 h-9 bg-slate-900/90 hover:bg-slate-800 text-white rounded-full flex items-center justify-center transition border border-slate-700">
         <i class="fa-solid fa-xmark text-lg"></i>
@@ -260,7 +260,7 @@
       <div class="relative w-full aspect-video bg-black flex items-center justify-center">
 
         <div id="trailerLoader" class="text-slate-400 text-sm flex flex-col items-center gap-3 text-center px-4">
-          <i class="fa-solid fa-spinner animate-spin text-emerald-500 text-2xl"></i> 
+          <i class="fa-solid fa-spinner animate-spin text-amber-500 text-2xl"></i> 
           <span id="loaderText">Loading Stream...</span>
         </div>
 
@@ -277,9 +277,9 @@
       <!-- SERVER SELECTION & NEXT EPISODE BAR -->
       <div id="serverBar" class="hidden bg-slate-900/90 border-b border-slate-800 px-5 py-2.5 flex flex-wrap items-center justify-between gap-2 text-xs">
         <div class="flex items-center gap-2 flex-wrap">
-          <span class="text-slate-400 font-bold flex items-center gap-1.5"><i class="fa-solid fa-server text-emerald-400"></i> Server:</span>
+          <span class="text-slate-400 font-bold flex items-center gap-1.5"><i class="fa-solid fa-server text-amber-400"></i> Server:</span>
           <div class="flex items-center gap-1.5 flex-wrap">
-            <button onclick="switchServer(1)" id="srv1" class="bg-emerald-600 text-white font-bold px-3 py-1 rounded transition">Server 1</button>
+            <button onclick="switchServer(1)" id="srv1" class="bg-amber-500 text-black font-bold px-3 py-1 rounded transition">Server 1</button>
             <button onclick="switchServer(2)" id="srv2" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3 py-1 rounded transition">Server 2</button>
             <button onclick="switchServer(3)" id="srv3" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3 py-1 rounded transition">Server 3</button>
             <button onclick="switchServer(4)" id="srv4" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3 py-1 rounded transition">Server 4</button>
@@ -288,7 +288,7 @@
         </div>
 
         <!-- NEXT EPISODE BUTTON -->
-        <button id="nextEpisodeBtn" onclick="playNextEpisode()" class="hidden bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold px-3.5 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 shadow">
+        <button id="nextEpisodeBtn" onclick="playNextEpisode()" class="hidden bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-black font-bold px-3.5 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 shadow">
           <span>Next Episode</span> <i class="fa-solid fa-forward"></i>
         </button>
       </div>
@@ -298,12 +298,12 @@
         <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
           <div class="flex items-center gap-3 flex-wrap">
             <div class="flex items-center gap-2">
-              <i class="fa-solid fa-list text-emerald-400 text-sm"></i>
+              <i class="fa-solid fa-list text-amber-400 text-sm"></i>
               <span class="text-white text-xs font-bold uppercase tracking-wider">Select Season & Episode</span>
             </div>
 
             <!-- MOVED "NOW WATCHING" BANNER RIGHT BESIDE "SELECT SEASON & EPISODE" -->
-            <div id="playingEpisodeBanner" class="hidden bg-emerald-950/90 border border-emerald-500/50 text-emerald-400 font-bold px-2.5 py-1 rounded-lg text-xs flex items-center gap-1.5 shadow">
+            <div id="playingEpisodeBanner" class="hidden bg-amber-950/90 border border-amber-500/50 text-amber-400 font-bold px-2.5 py-1 rounded-lg text-xs flex items-center gap-1.5 shadow">
               <i class="fa-solid fa-play text-[10px] animate-pulse"></i>
               <span id="playingEpisodeText">NOW WATCHING: Season 1, Episode 1</span>
             </div>
@@ -311,7 +311,7 @@
 
           <div class="flex items-center gap-2">
             <label class="text-xs text-slate-400 font-medium">Season:</label>
-            <select id="seasonSelect" onchange="loadSeasonEpisodes()" class="bg-slate-800 text-white text-xs font-bold rounded px-2.5 py-1 border border-slate-700 focus:outline-none focus:border-emerald-500 cursor-pointer"></select>
+            <select id="seasonSelect" onchange="loadSeasonEpisodes()" class="bg-slate-800 text-white text-xs font-bold rounded px-2.5 py-1 border border-slate-700 focus:outline-none focus:border-amber-500 cursor-pointer"></select>
           </div>
         </div>
         <div id="episodesList" class="flex gap-2 overflow-x-auto pb-2 max-h-36 flex-wrap no-scrollbar"></div>
@@ -321,7 +321,7 @@
       <div class="p-5 md:p-8">
         <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
           <div>
-            <span id="modalType" class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-400 bg-emerald-950/80 border border-emerald-800/80 px-2.5 py-1 rounded">STREAM</span>
+            <span id="modalType" class="text-[10px] font-extrabold uppercase tracking-wider text-amber-400 bg-amber-950/80 border border-amber-800/80 px-2.5 py-1 rounded">STREAM</span>
             <h3 id="modalTitle" class="text-xl md:text-3xl font-bold text-white mt-1.5">Title</h3>
           </div>
           <div class="flex items-center gap-3 text-xs md:text-sm">
@@ -335,14 +335,14 @@
 
         <!-- PLAY BUTTON -->
         <div class="mb-8">
-          <button id="mainPlayBtn" onclick="startStream(1)" class="w-full ps-glow bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 hover:opacity-95 text-white font-black text-base md:text-lg py-3.5 px-8 rounded-xl flex items-center justify-center gap-3 transition transform active:scale-95">
+          <button id="mainPlayBtn" onclick="startStream(1)" class="w-full ps-glow bg-gradient-to-r from-amber-500 via-yellow-500 to-orange-500 hover:opacity-95 text-black font-black text-base md:text-lg py-3.5 px-8 rounded-xl flex items-center justify-center gap-3 transition transform active:scale-95">
             <i class="fa-solid fa-play text-lg"></i> PLAY NOW
           </button>
         </div>
 
         <!-- CAST GRID SECTION -->
         <div id="castContainer" class="pt-6 border-t border-slate-800/80">
-          <h4 class="text-sm md:text-base font-bold uppercase tracking-wider text-emerald-400 mb-4 flex items-center gap-2">
+          <h4 class="text-sm md:text-base font-bold uppercase tracking-wider text-amber-400 mb-4 flex items-center gap-2">
             <i class="fa-solid fa-users text-lg"></i> Main Cast & Voice Actors
           </h4>
           
@@ -357,7 +357,7 @@
   </div>
 
   <footer class="w-full py-6 border-t border-slate-900 bg-[#05070a] text-center">
-    <p class="text-xs text-slate-500 font-medium tracking-wide">zoroTV © 2015 - 2026</p>
+    <p class="text-xs text-slate-500 font-medium tracking-wide">ZenitsuTV © 2015 - 2026</p>
   </footer>
 
   <script>
@@ -426,7 +426,7 @@
         const btn = document.getElementById(`tab_${cat}`);
         if (btn) {
           if (cat === category) {
-            btn.className = "cat-btn bg-emerald-600 text-white px-5 py-2 rounded-lg font-medium whitespace-nowrap";
+            btn.className = "cat-btn bg-amber-500 text-black font-bold px-5 py-2 rounded-lg whitespace-nowrap";
           } else {
             btn.className = "cat-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-5 py-2 rounded-lg font-medium whitespace-nowrap";
           }
@@ -445,7 +445,7 @@
       const loader = document.getElementById('infiniteLoader');
 
       if (!append) {
-        grid.innerHTML = `<div class="col-span-full text-center py-16 text-emerald-400 font-semibold"><i class="fa-solid fa-spinner animate-spin text-3xl mb-3"></i><br>Loading zoroTV Library...</div>`;
+        grid.innerHTML = `<div class="col-span-full text-center py-16 text-amber-400 font-semibold"><i class="fa-solid fa-spinner animate-spin text-3xl mb-3"></i><br>Loading ZenitsuTV Library...</div>`;
       } else {
         loader.classList.remove('hidden');
       }
@@ -542,7 +542,7 @@
         card.innerHTML = `
           <div class="aspect-[2/3] w-full overflow-hidden relative">
             <img src="${poster}" alt="${cleanStr(title)}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" loading="lazy" />
-            <div class="absolute top-2 left-2 bg-black/80 backdrop-blur-md text-[10px] font-bold text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/30 uppercase">
+            <div class="absolute top-2 left-2 bg-black/80 backdrop-blur-md text-[10px] font-bold text-amber-400 px-2 py-0.5 rounded border border-amber-500/30 uppercase">
               ${type}
             </div>
             <div class="absolute top-2 right-2 bg-black/80 backdrop-blur-md text-xs font-bold text-yellow-400 px-2 py-0.5 rounded flex items-center gap-1">
@@ -550,7 +550,7 @@
             </div>
           </div>
           <div class="p-3">
-            <h3 class="text-xs sm:text-sm font-bold text-white truncate group-hover:text-emerald-400 transition">${cleanStr(title)}</h3>
+            <h3 class="text-xs sm:text-sm font-bold text-white truncate group-hover:text-amber-400 transition">${cleanStr(title)}</h3>
             <p class="text-[10px] sm:text-xs text-slate-400 mt-1">${year}</p>
           </div>
         `;
@@ -572,7 +572,7 @@
 
       activeCategorySession++;
       const grid = document.getElementById('contentGrid');
-      grid.innerHTML = `<div class="col-span-full text-center py-12 text-emerald-400 font-semibold"><i class="fa-solid fa-spinner animate-spin text-2xl mb-2"></i><br>Searching "${query}"...</div>`;
+      grid.innerHTML = `<div class="col-span-full text-center py-12 text-amber-400 font-semibold"><i class="fa-solid fa-spinner animate-spin text-2xl mb-2"></i><br>Searching "${query}"...</div>`;
 
       try {
         const res = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${TMDB_KEY}&query=${encodeURIComponent(query)}&include_adult=true`);
@@ -593,7 +593,7 @@
 
     async function fetchCastInfo(id, endpoint) {
       const castList = document.getElementById('castList');
-      castList.innerHTML = `<span class="text-slate-500 text-xs col-span-full py-4"><i class="fa-solid fa-spinner animate-spin text-emerald-500"></i> Loading cast details...</span>`;
+      castList.innerHTML = `<span class="text-slate-500 text-xs col-span-full py-4"><i class="fa-solid fa-spinner animate-spin text-amber-500"></i> Loading cast details...</span>`;
 
       try {
         const res = await fetch(`https://api.themoviedb.org/3/${endpoint}/${id}/credits?api_key=${TMDB_KEY}`);
@@ -605,14 +605,14 @@
             const profilePic = actor.profile_path ? (IMAGE_BASE + actor.profile_path) : 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=300&auto=format&fit=crop';
             
             const castCard = document.createElement('div');
-            castCard.className = "group bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg hover:border-emerald-500/60 transition duration-300";
+            castCard.className = "group bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg hover:border-amber-500/60 transition duration-300";
             
             castCard.innerHTML = `
               <div class="aspect-[3/4] w-full overflow-hidden bg-slate-950 relative">
                 <img src="${profilePic}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" alt="${cleanStr(actor.name)}" loading="lazy" />
               </div>
               <div class="p-2.5 text-left">
-                <p class="text-white text-xs font-bold truncate group-hover:text-emerald-400 transition">${cleanStr(actor.name)}</p>
+                <p class="text-white text-xs font-bold truncate group-hover:text-amber-400 transition">${cleanStr(actor.name)}</p>
                 <p class="text-slate-400 text-[10px] truncate mt-0.5">${cleanStr(actor.character) || 'Cast / Voice'}</p>
               </div>
             `;
@@ -755,7 +755,7 @@
     async function loadSeasonEpisodes(totalEpFallback = 0) {
       selectedSeason = document.getElementById('seasonSelect').value || 1;
       const episodesList = document.getElementById('episodesList');
-      episodesList.innerHTML = `<div class="text-emerald-400 text-xs py-2"><i class="fa-solid fa-spinner animate-spin"></i> Fetching episodes...</div>`;
+      episodesList.innerHTML = `<div class="text-amber-400 text-xs py-2"><i class="fa-solid fa-spinner animate-spin"></i> Fetching episodes...</div>`;
 
       try {
         const res = await fetch(`https://api.themoviedb.org/3/tv/${activeMedia.id}/season/${selectedSeason}?api_key=${TMDB_KEY}`);
@@ -772,14 +772,14 @@
             const isSelected = (idx === 0);
             const epBtn = document.createElement('button');
             epBtn.className = `ep-btn text-xs font-semibold px-3 py-2 rounded-lg border text-left transition flex items-center gap-2 truncate max-w-[210px] ${
-              isSelected ? 'bg-emerald-600 border-emerald-500 text-white font-bold' : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'
+              isSelected ? 'bg-amber-500 border-amber-400 text-black font-bold' : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'
             }`;
             epBtn.id = `epBtn_${ep.episode_number}`;
             epBtn.setAttribute('data-epnum', ep.episode_number);
             epBtn.onclick = () => selectEpisode(ep.episode_number);
 
             epBtn.innerHTML = `
-              <span class="bg-black/40 px-1.5 py-0.5 rounded text-[10px] text-emerald-300">E${ep.episode_number}</span>
+              <span class="bg-black/40 px-1.5 py-0.5 rounded text-[10px] text-amber-300">E${ep.episode_number}</span>
               <span class="truncate">${cleanStr(ep.name) || 'Episode ' + ep.episode_number}</span>
             `;
             episodesList.appendChild(epBtn);
@@ -802,14 +802,14 @@
         const isSelected = (i === selectedEpisode);
         const epBtn = document.createElement('button');
         epBtn.className = `ep-btn text-xs font-semibold px-3 py-2 rounded-lg border text-left transition flex items-center gap-2 truncate max-w-[210px] ${
-          isSelected ? 'bg-emerald-600 border-emerald-500 text-white font-bold' : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'
+          isSelected ? 'bg-amber-500 border-amber-400 text-black font-bold' : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'
         }`;
         epBtn.id = `epBtn_${i}`;
         epBtn.setAttribute('data-epnum', i);
         epBtn.onclick = () => selectEpisode(i);
 
         epBtn.innerHTML = `
-          <span class="bg-black/40 px-1.5 py-0.5 rounded text-[10px] text-emerald-300">E${i}</span>
+          <span class="bg-black/40 px-1.5 py-0.5 rounded text-[10px] text-amber-300">E${i}</span>
           <span class="truncate">Episode ${i}</span>
         `;
         episodesList.appendChild(epBtn);
@@ -822,7 +822,7 @@
         btn.className = "ep-btn text-xs font-semibold px-3 py-2 rounded-lg border text-left transition flex items-center gap-2 truncate max-w-[210px] bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700";
       });
       const activeBtn = document.getElementById(`epBtn_${epNum}`);
-      if (activeBtn) activeBtn.className = "ep-btn text-xs font-semibold px-3 py-2 rounded-lg border text-left transition flex items-center gap-2 truncate max-w-[210px] bg-emerald-600 border-emerald-500 text-white font-bold";
+      if (activeBtn) activeBtn.className = "ep-btn text-xs font-semibold px-3 py-2 rounded-lg border text-left transition flex items-center gap-2 truncate max-w-[210px] bg-amber-500 border-amber-400 text-black font-bold";
       startStream(currentServer);
     }
 
@@ -871,8 +871,6 @@
         nextBtn.classList.add('hidden');
       }
 
-      // ANIME / LONG-RUNNING SHOW MAPPING FIX:
-      // If episode number > 100 (e.g. One Piece Ep 1050), pass Season 1 with absolute episode number
       let targetSeason = selectedSeason;
       let targetEpisode = selectedEpisode;
 
@@ -917,7 +915,7 @@
       [1, 2, 3, 4, 5].forEach(n => {
         const btn = document.getElementById(`srv${n}`);
         if (btn) {
-          if (n === num) btn.className = "bg-emerald-600 text-white font-bold px-3 py-1 rounded transition";
+          if (n === num) btn.className = "bg-amber-500 text-black font-bold px-3 py-1 rounded transition";
           else btn.className = "bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3 py-1 rounded transition";
         }
       });
