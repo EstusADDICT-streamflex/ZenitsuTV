@@ -10,11 +10,11 @@
   <link rel="dns-prefetch" href="//image.tmdb.org" />
   <link rel="dns-prefetch" href="//cdn.tailwindcss.com" />
   <link rel="dns-prefetch" href="//cdnjs.cloudflare.com" />
-  <link rel="dns-prefetch" href="//vidlink.pro" />
-  <link rel="dns-prefetch" href="//watch-v2.autoembed.cc" />
-  <link rel="dns-prefetch" href="//embed.su" />
-  <link rel="dns-prefetch" href="//vidsrc.icu" />
-  <link rel="dns-prefetch" href="//vidsrc.to" />
+  <link rel="dns-prefetch" href="//vidsrc.cc" />
+  <link rel="dns-prefetch" href="//vidsrc.me" />
+  <link rel="dns-prefetch" href="//vidsrc.xyz" />
+  <link rel="dns-prefetch" href="//2embed.cc" />
+  <link rel="dns-prefetch" href="//autoembed.co" />
 
   <link rel="preconnect" href="https://image.tmdb.org" crossorigin />
   <link rel="preconnect" href="https://api.themoviedb.org" crossorigin />
@@ -811,7 +811,7 @@
       const rating = item && item.vote_average ? item.vote_average.toFixed(1) : "N/A";
       const year = item ? (item.release_date || item.first_air_date || '2026').substring(0, 4) : "2026";
 
-      activeMedia = { id, type: mediaEndpoint, title };
+      activeMedia = { id: id, type: mediaEndpoint, title: title };
       selectedSeason = 1;
       selectedEpisode = 1;
 
@@ -869,7 +869,7 @@
       try {
         const data = await fetchWithCache(`https://api.themoviedb.org/3/tv/${tvId}?api_key=${TMDB_KEY}`);
 
-        if (tvId === 37854) {
+        if (Number(tvId) === 37854) {
           seasonContainer.classList.add('hidden');
           selectedSeason = 1;
           selectedEpisode = 1;
@@ -891,7 +891,7 @@
         } else {
           seasonSelect.innerHTML = `<option value="1">Season 1</option>`;
         }
-        selectedSeason = seasonSelect.value || 1;
+        selectedSeason = Number(seasonSelect.value) || 1;
         selectedEpisode = 1;
         await loadSeasonEpisodes();
       } catch (e) {
@@ -928,9 +928,9 @@
     }
 
     async function loadSeasonEpisodes() {
-      if (activeMedia.id === 37854) return;
+      if (Number(activeMedia.id) === 37854) return;
 
-      selectedSeason = document.getElementById('seasonSelect').value || 1;
+      selectedSeason = Number(document.getElementById('seasonSelect').value) || 1;
       const episodesList = document.getElementById('episodesList');
       episodesList.innerHTML = `<div class="text-yellow-400 text-xs py-2"><i class="fa-solid fa-spinner animate-spin"></i> Fetching episodes...</div>`;
 
@@ -940,22 +940,23 @@
         episodesList.innerHTML = '';
         if (data.episodes && data.episodes.length > 0) {
           totalSeasonEpisodes = data.episodes.length;
-          selectedEpisode = data.episodes[0].episode_number;
+          selectedEpisode = Number(data.episodes[0].episode_number);
 
           const fragment = document.createDocumentFragment();
           data.episodes.forEach((ep, idx) => {
+            const epNum = Number(ep.episode_number);
             const isSelected = (idx === 0);
             const epBtn = document.createElement('button');
             epBtn.className = `ep-btn text-xs font-semibold px-3 py-2 rounded-lg border text-left transition flex items-center gap-2 truncate max-w-[210px] ${
               isSelected ? 'bg-yellow-400 border-yellow-300 text-black font-bold' : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'
             }`;
-            epBtn.id = `epBtn_${ep.episode_number}`;
-            epBtn.setAttribute('data-epnum', ep.episode_number);
-            epBtn.onclick = () => selectEpisode(ep.episode_number);
+            epBtn.id = `epBtn_${epNum}`;
+            epBtn.setAttribute('data-epnum', epNum);
+            epBtn.onclick = () => selectEpisode(epNum);
 
             epBtn.innerHTML = `
-              <span class="bg-black/40 px-1.5 py-0.5 rounded text-[10px] text-yellow-300">E${ep.episode_number}</span>
-              <span class="truncate">${cleanStr(ep.name) || 'Episode ' + ep.episode_number}</span>
+              <span class="bg-black/40 px-1.5 py-0.5 rounded text-[10px] text-yellow-300">E${epNum}</span>
+              <span class="truncate">${cleanStr(ep.name) || 'Episode ' + epNum}</span>
             `;
             fragment.appendChild(epBtn);
           });
@@ -994,7 +995,7 @@
     }
 
     function selectEpisode(epNum) {
-      selectedEpisode = epNum;
+      selectedEpisode = Number(epNum);
       document.querySelectorAll('.ep-btn').forEach(btn => {
         btn.className = "ep-btn text-xs font-semibold px-3 py-2 rounded-lg border text-left transition flex items-center gap-2 truncate max-w-[210px] bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700";
       });
@@ -1017,7 +1018,7 @@
       if (!activeMedia.id) return;
       currentServer = serverNum;
 
-      const isOnePiece = (activeMedia.id === 37854);
+      const isOnePiece = (Number(activeMedia.id) === 37854);
       const effectiveSeason = isOnePiece ? 1 : selectedSeason;
 
       const trailerFrame = document.getElementById('modalTrailer');
@@ -1045,24 +1046,24 @@
 
       if (serverNum === 1) {
         streamUrl = isMovie 
-          ? `https://vidlink.pro/movie/${activeMedia.id}`
-          : `https://vidlink.pro/tv/${activeMedia.id}/${effectiveSeason}/${selectedEpisode}`;
+          ? `https://vidsrc.cc/v2/embed/movie/${activeMedia.id}`
+          : `https://vidsrc.cc/v2/embed/tv/${activeMedia.id}/${effectiveSeason}/${selectedEpisode}`;
       } else if (serverNum === 2) {
         streamUrl = isMovie 
-          ? `https://watch-v2.autoembed.cc/movie/${activeMedia.id}`
-          : `https://watch-v2.autoembed.cc/tv/${activeMedia.id}/${effectiveSeason}/${selectedEpisode}`;
+          ? `https://vidsrc.me/embed/movie?tmdb=${activeMedia.id}`
+          : `https://vidsrc.me/embed/tv?tmdb=${activeMedia.id}&season=${effectiveSeason}&episode=${selectedEpisode}`;
       } else if (serverNum === 3) {
         streamUrl = isMovie
-          ? `https://embed.su/embed/movie/${activeMedia.id}`
-          : `https://embed.su/embed/tv/${activeMedia.id}/${effectiveSeason}/${selectedEpisode}`;
+          ? `https://vidsrc.xyz/embed/movie?tmdb=${activeMedia.id}`
+          : `https://vidsrc.xyz/embed/tv?tmdb=${activeMedia.id}&season=${effectiveSeason}&episode=${selectedEpisode}`;
       } else if (serverNum === 4) {
         streamUrl = isMovie
-          ? `https://vidsrc.icu/embed/movie/${activeMedia.id}`
-          : `https://vidsrc.icu/embed/tv/${activeMedia.id}/${effectiveSeason}/${selectedEpisode}`;
+          ? `https://2embed.cc/embed/${activeMedia.id}`
+          : `https://2embed.cc/embedtv/${activeMedia.id}&s=${effectiveSeason}&e=${selectedEpisode}`;
       } else if (serverNum === 5) {
         streamUrl = isMovie
-          ? `https://vidsrc.to/embed/movie/${activeMedia.id}`
-          : `https://vidsrc.to/embed/tv/${activeMedia.id}/${effectiveSeason}/${selectedEpisode}`;
+          ? `https://autoembed.co/movie/tmdb/${activeMedia.id}`
+          : `https://autoembed.co/tv/tmdb/${activeMedia.id}-${effectiveSeason}-${selectedEpisode}`;
       }
 
       trailerFrame.src = streamUrl;
