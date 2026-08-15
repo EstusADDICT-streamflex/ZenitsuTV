@@ -3,25 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- FIX YOUTUBE ERROR 153 REFERRER POLICY -->
   <meta name="referrer" content="strict-origin-when-cross-origin" />
-  <title>ZenitsuTV - Stream Movies, TV Shows & Anime</title>
+  <title>ZenitsuTV - Anime, Movies & TV Shows</title>
   
   <link rel="dns-prefetch" href="//api.themoviedb.org" />
   <link rel="dns-prefetch" href="//image.tmdb.org" />
   <link rel="dns-prefetch" href="//cdn.tailwindcss.com" />
   <link rel="dns-prefetch" href="//cdnjs.cloudflare.com" />
-  <link rel="dns-prefetch" href="//vidsrc.to" />
-  <link rel="dns-prefetch" href="//vidsrc.me" />
-  <link rel="dns-prefetch" href="//vidsrc.cc" />
-  <link rel="dns-prefetch" href="//vidsrc.pro" />
+  <link rel="dns-prefetch" href="//vidlink.pro" />
+  <link rel="dns-prefetch" href="//watch-v2.autoembed.cc" />
+  <link rel="dns-prefetch" href="//embed.su" />
   <link rel="dns-prefetch" href="//vidsrc.icu" />
-  <link rel="dns-prefetch" href="//www.youtube.com" />
+  <link rel="dns-prefetch" href="//vidsrc.to" />
 
   <link rel="preconnect" href="https://image.tmdb.org" crossorigin />
   <link rel="preconnect" href="https://api.themoviedb.org" crossorigin />
-  <link rel="preconnect" href="https://vidsrc.to" crossorigin />
-  <link rel="preconnect" href="https://www.youtube.com" crossorigin />
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -41,7 +37,7 @@
       border-color: rgba(250, 204, 21, 0.8);
     }
     .glass-nav {
-      background: rgba(11, 15, 25, 0.85);
+      background: rgba(11, 15, 25, 0.88);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
@@ -52,12 +48,31 @@
       border: 1px solid rgba(255, 255, 255, 0.1);
     }
     .zenitsu-bg-card {
-      background: linear-gradient(135deg, rgba(7, 9, 14, 0.90) 0%, rgba(15, 23, 42, 0.82) 100%), 
+      background: linear-gradient(135deg, rgba(7, 9, 14, 0.92) 0%, rgba(15, 23, 42, 0.85) 100%), 
                   url('https://c.tenor.com/e7p0L1o72tIAAAAC/zenitsu-demon-slayer.gif');
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
     }
+    
+    .hero-banner { position: relative; width: 100%; height: 55vh; min-height: 420px; max-height: 580px; }
+    .hero-poster, .hero-video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .hero-video {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.7s ease-in-out;
+    }
+
+    .hero-video.is-loaded { opacity: 1; pointer-events: auto; }
+
     ::-webkit-scrollbar { width: 8px; height: 8px; }
     ::-webkit-scrollbar-track { background: #07090e; }
     ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
@@ -79,35 +94,15 @@
       </div>
       <h2 class="text-xl md:text-2xl font-black text-white mb-3 brand-font tracking-wide">TERMS OF USE</h2>
       <div class="text-slate-300 text-sm leading-relaxed space-y-3 mb-6 bg-slate-900/60 p-4 rounded-xl border border-slate-800 text-left">
-        <p class="font-medium">Welcome to <strong class="brand-font"><span class="text-white">Zenitsu</span><span class="text-yellow-400">TV</span></strong>. Please accept our terms to continue:</p>
+        <p class="font-medium">Welcome to <strong class="brand-font"><span class="text-white">Zenitsu</span><span class="text-yellow-400">TV</span></strong>. Accept terms to enter:</p>
         <ul class="list-disc list-inside space-y-1 text-slate-400 text-xs">
-          <li>Personal, non-commercial streaming only.</li>
-          <li class="text-red-400 font-semibold">Re-distribution or commercial streaming is prohibited.</li>
+          <li>Strictly non-adult / non-hentai anime and family-friendly content catalog.</li>
+          <li>Personal non-commercial streaming only.</li>
         </ul>
       </div>
       <button onclick="acceptTerms()" class="w-full ps-glow bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-300 hover:to-amber-400 text-black font-bold py-3.5 px-6 rounded-xl text-sm transition transform active:scale-95 flex items-center justify-center gap-2">
-        <i class="fa-solid fa-check"></i> Accept & Continue
+        <i class="fa-solid fa-check"></i> Accept & Enter
       </button>
-    </div>
-  </div>
-
-  <!-- LOGO INFORMATION MODAL -->
-  <div id="logoModal" onclick="if(event.target === this) closeLogoModal()" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
-    <div class="relative glass-panel w-full max-w-lg rounded-2xl p-6 md:p-8 border border-yellow-400/40 text-left shadow-2xl">
-      <button onclick="closeLogoModal()" class="absolute top-4 right-4 z-20 w-8 h-8 bg-slate-900/90 hover:bg-slate-800 text-white rounded-full flex items-center justify-center transition border border-slate-700">
-        <i class="fa-solid fa-xmark text-sm"></i>
-      </button>
-      <div class="flex items-center gap-3 mb-4">
-        <h3 class="text-2xl font-black brand-font tracking-wide">
-          <span class="text-white">Zenitsu</span><span class="text-yellow-400">TV</span>
-        </h3>
-      </div>
-      <div class="text-slate-300 text-xs md:text-sm leading-relaxed space-y-3 bg-slate-900/60 p-4 rounded-xl border border-slate-800">
-        <p>At <strong>ZenitsuTV</strong>, our mission is to provide fast, high-quality streams for Anime, Movies, and TV Shows.</p>
-        <p>We respect intellectual property rights and index publicly available media endpoints without restriction.</p>
-        <p>Make sure to give feedback on Instagram ZenitsuTV.</p>
-      </div>
-      <button onclick="closeLogoModal()" class="mt-5 w-full bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2.5 px-4 rounded-xl text-xs transition border border-slate-700">Close</button>
     </div>
   </div>
 
@@ -115,20 +110,19 @@
   <header class="fixed top-0 left-0 right-0 z-40 glass-nav px-4 md:px-6 py-4 transition-all duration-300">
     <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
       <div class="flex items-center gap-8">
-        <button onclick="openLogoModal()" class="brand-font text-2xl md:text-3xl font-black tracking-tight flex items-center focus:outline-none hover:opacity-90 transition">
+        <button onclick="showHomeView()" class="brand-font text-2xl md:text-3xl font-black tracking-tight flex items-center focus:outline-none hover:opacity-90 transition">
           <span class="text-white">Zenitsu</span><span class="text-yellow-400">TV</span>
         </button>
         <nav class="hidden md:flex items-center gap-6 text-sm font-semibold text-gray-300">
-          <button onclick="switchCategoryTab('trending')" class="hover:text-yellow-400 transition">Trending</button>
-          <button onclick="switchCategoryTab('anime')" class="hover:text-yellow-400 transition">Anime</button>
-          <button onclick="switchCategoryTab('movie')" class="hover:text-yellow-400 transition">Movies</button>
-          <button onclick="switchCategoryTab('tv')" class="hover:text-yellow-400 transition">TV Shows</button>
-          <a href="#aboutSection" class="hover:text-yellow-400 transition">About Us</a>
+          <button onclick="showHomeView()" class="hover:text-yellow-400 transition text-yellow-400 font-bold">Home</button>
+          <button onclick="showLibraryView('anime')" class="hover:text-yellow-400 transition flex items-center gap-1.5"><i class="fa-solid fa-torii-gate text-xs"></i> Anime</button>
+          <button onclick="showLibraryView('movie')" class="hover:text-yellow-400 transition flex items-center gap-1.5"><i class="fa-solid fa-film text-xs"></i> Movies</button>
+          <button onclick="showLibraryView('tv')" class="hover:text-yellow-400 transition flex items-center gap-1.5"><i class="fa-solid fa-tv text-xs"></i> TV Shows</button>
         </nav>
       </div>
       <div class="flex items-center gap-3">
         <div class="relative">
-          <input id="searchInput" oninput="debounceSearch()" type="text" placeholder="Search titles..." 
+          <input id="searchInput" oninput="debounceSearch()" type="text" placeholder="Search anime, movies, TV..." 
             class="bg-slate-900/90 text-sm text-white rounded-full pl-10 pr-4 py-2 w-36 sm:w-64 border border-slate-700 focus:outline-none focus:border-yellow-400 transition duration-200">
           <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-sm"></i>
         </div>
@@ -136,97 +130,162 @@
     </div>
   </header>
 
-  <!-- MAIN CONTENT CONTAINER -->
-  <main class="pt-20 pb-28 flex-grow">
-    <!-- HERO FEATURED SECTION -->
-    <section class="relative w-full h-[55vh] min-h-[420px] max-h-[600px] mb-8 overflow-hidden">
-      <div id="heroBg" class="absolute inset-0 bg-cover bg-center transition-all duration-500 scale-100" style="background-image: url('https://image.tmdb.org/t/p/original/m91f9P3B0S2809uS2r1p11v1p2y.jpg');"></div>
-      <div class="absolute inset-0 bg-gradient-to-t from-[#07090e] via-transparent to-transparent"></div>
-      <div class="absolute inset-0 bg-gradient-to-r from-[#07090e]/80 via-transparent to-transparent"></div>
+  <!-- MAIN HERO BANNER AT TOP OF ALL SECTIONS -->
+  <section class="mt-16 relative w-full hero-banner overflow-hidden bg-black border-b border-slate-800">
+    <img id="hero-poster" class="hero-poster" alt="Hero Banner" src="https://image.tmdb.org/t/p/original/m91f9P3B0S2809uS2r1p11v1p2y.jpg" />
+    <iframe id="hero-trailer" class="hero-video" src="" frameborder="0" allow="autoplay; encrypted-media"></iframe>
 
-      <div class="relative max-w-7xl mx-auto h-full px-6 flex flex-col justify-end pb-12">
-        <div class="inline-flex items-center gap-2 bg-yellow-400/20 border border-yellow-400/40 rounded-full px-3 py-1 text-xs text-yellow-300 font-semibold mb-3 w-fit">
-          <i class="fa-solid fa-fire text-yellow-400"></i> FEATURED ON ZENITSUTV
-        </div>
-        <h1 id="heroTitle" class="brand-font text-2xl md:text-5xl font-black text-white mb-3 tracking-wide drop-shadow-lg">Loading...</h1>
-        <p id="heroDesc" class="text-gray-300 text-xs md:text-base max-w-xl mb-6 line-clamp-3 leading-relaxed">Connecting to servers...</p>
-        <div class="flex items-center gap-4">
-          <button id="heroPlayBtn" class="ps-glow bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-300 hover:to-amber-400 text-black font-bold px-6 py-3 rounded-xl flex items-center gap-2 text-sm md:text-base transition transform hover:scale-105">
-            <i class="fa-solid fa-play"></i> Watch Now / Info
+    <div class="absolute inset-0 bg-gradient-to-t from-[#07090e] via-transparent to-transparent z-10"></div>
+    <div class="absolute inset-0 bg-gradient-to-r from-[#07090e]/90 via-[#07090e]/40 to-transparent z-10"></div>
+
+    <div class="relative z-20 max-w-7xl mx-auto h-full px-6 flex flex-col justify-end pb-10">
+      <div id="heroBadge" class="inline-flex items-center gap-2 bg-yellow-400/20 border border-yellow-400/40 rounded-full px-3 py-1 text-xs text-yellow-300 font-semibold mb-3 w-fit">
+        <i class="fa-solid fa-fire text-yellow-400"></i> FEATURED MEDIA
+      </div>
+      <h1 id="heroTitle" class="brand-font text-2xl md:text-5xl font-black text-white mb-3 tracking-wide drop-shadow-lg">Loading Featured...</h1>
+      <p id="heroDesc" class="text-gray-300 text-xs md:text-base max-w-xl mb-6 line-clamp-3 leading-relaxed">Loading stream catalog...</p>
+      <div class="flex items-center gap-4">
+        <button id="heroPlayBtn" class="ps-glow bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-300 hover:to-amber-400 text-black font-bold px-6 py-3 rounded-xl flex items-center gap-2 text-sm md:text-base transition transform hover:scale-105">
+          <i class="fa-solid fa-play"></i> Watch Now
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="pb-16 flex-grow">
+
+    <!-- NAVIGATION TABS -->
+    <div class="max-w-7xl mx-auto px-4 md:px-6 my-6">
+      <div class="bg-slate-900/90 border border-slate-800 p-2.5 rounded-2xl flex flex-wrap items-center justify-between gap-3 shadow-lg">
+        <div class="flex items-center gap-2 flex-wrap">
+          <button onclick="showHomeView()" id="tabHome" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition bg-yellow-400 text-black shadow">
+            <i class="fa-solid fa-house"></i> Home
+          </button>
+          <button onclick="showLibraryView('anime')" id="tabAnime" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white">
+            <i class="fa-solid fa-torii-gate text-yellow-400"></i> Anime Library
+          </button>
+          <button onclick="showLibraryView('movie')" id="tabMovies" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white">
+            <i class="fa-solid fa-clapperboard text-yellow-400"></i> Movies Library
+          </button>
+          <button onclick="showLibraryView('tv')" id="tabTv" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white">
+            <i class="fa-solid fa-tv text-yellow-400"></i> TV Shows Library
           </button>
         </div>
-      </div>
-    </section>
-
-    <!-- CATEGORY FILTER TABS -->
-    <div class="max-w-7xl mx-auto px-6 mb-6">
-      <div class="flex items-center gap-3 overflow-x-auto pb-2 text-sm no-scrollbar">
-        <button onclick="switchCategoryTab('trending')" id="tab_trending" class="cat-btn bg-yellow-400 text-black font-bold px-5 py-2 rounded-lg whitespace-nowrap">🔥 Popular & Trending</button>
-        <button onclick="switchCategoryTab('anime')" id="tab_anime" class="cat-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-5 py-2 rounded-lg font-medium whitespace-nowrap">⛩️ Anime Collection</button>
-        <button onclick="switchCategoryTab('movie')" id="tab_movie" class="cat-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-5 py-2 rounded-lg font-medium whitespace-nowrap">🎬 Movies Library</button>
-        <button onclick="switchCategoryTab('tv')" id="tab_tv" class="cat-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-5 py-2 rounded-lg font-medium whitespace-nowrap">📺 TV Shows</button>
+        <div class="text-xs text-slate-400 hidden sm:block font-medium">
+          <i class="fa-solid fa-ban text-red-400"></i> Strict SFW Hentai-Free Filter
+        </div>
       </div>
     </div>
 
-    <!-- CONTENT GRID ROW -->
-    <section class="max-w-7xl mx-auto px-6 mb-16">
-      <h2 id="sectionTitle" class="text-xl md:text-2xl font-bold text-white mb-6 flex items-center gap-2">
-        <span class="w-1.5 h-6 bg-yellow-400 rounded-full"></span> ZenitsuTV Library
-      </h2>
-      <div id="contentGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-5"></div>
+    <!-- HOME VIEW SECTION -->
+    <div id="homeView">
       
-      <div id="infiniteLoader" class="mt-10 text-center py-6 hidden">
-        <div class="inline-flex items-center gap-3 text-yellow-400 font-semibold text-sm">
-          <i class="fa-solid fa-spinner animate-spin text-2xl"></i> Loading additional titles...
+      <!-- ANIME SECTION (FEATURED ONE PIECE) -->
+      <section id="animeSection" class="max-w-7xl mx-auto px-6 mb-12">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2">
+            <span class="w-1.5 h-6 bg-yellow-400 rounded-full"></span> Top Anime (Featuring One Piece)
+          </h2>
+          <div class="flex items-center gap-2">
+            <button onclick="scrollRow('topAnimeRow', -300)" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-white flex items-center justify-center transition border border-slate-700">
+              <i class="fa-solid fa-chevron-left text-xs"></i>
+            </button>
+            <button onclick="scrollRow('topAnimeRow', 300)" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-white flex items-center justify-center transition border border-slate-700">
+              <i class="fa-solid fa-chevron-right text-xs"></i>
+            </button>
+          </div>
         </div>
-      </div>
-    </section>
 
-    <!-- ABOUT SECTION -->
-    <section id="aboutSection" class="max-w-7xl mx-auto px-4 md:px-6 mb-12">
-      <div class="zenitsu-bg-card rounded-xl md:rounded-2xl p-6 sm:p-8 md:p-12 border border-yellow-400/30 relative overflow-hidden shadow-2xl">
-        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 md:gap-6 mb-4 md:mb-6">
-          <div>
-            <span class="text-[10px] sm:text-xs font-bold text-yellow-400 uppercase tracking-widest bg-yellow-950/80 border border-yellow-800/80 px-3 py-1 rounded-full">Established 2015</span>
-            <div class="mt-3 flex items-center gap-3">
-              <h3 class="brand-font text-3xl sm:text-4xl md:text-5xl font-black tracking-wider drop-shadow-md">
-                About <span class="text-white">Zenitsu</span><span class="text-yellow-400">TV</span>
-              </h3>
+        <div id="topAnimeRow" class="flex items-center gap-4 overflow-x-auto no-scrollbar scroll-smooth py-2">
+          <div class="text-yellow-400 font-semibold text-sm py-8"><i class="fa-solid fa-spinner animate-spin"></i> Loading Anime...</div>
+        </div>
+      </section>
+
+      <!-- TV SHOWS SECTION (FEATURED THE MENTALIST) -->
+      <section id="tvSection" class="max-w-7xl mx-auto px-6 mb-12">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2">
+            <span class="w-1.5 h-6 bg-yellow-400 rounded-full"></span> Top TV Shows (Featuring The Mentalist)
+          </h2>
+          <div class="flex items-center gap-2">
+            <button onclick="scrollRow('topTvRow', -300)" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-white flex items-center justify-center transition border border-slate-700">
+              <i class="fa-solid fa-chevron-left text-xs"></i>
+            </button>
+            <button onclick="scrollRow('topTvRow', 300)" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-white flex items-center justify-center transition border border-slate-700">
+              <i class="fa-solid fa-chevron-right text-xs"></i>
+            </button>
+          </div>
+        </div>
+
+        <div id="topTvRow" class="flex items-center gap-4 overflow-x-auto no-scrollbar scroll-smooth py-2">
+          <div class="text-yellow-400 font-semibold text-sm py-8"><i class="fa-solid fa-spinner animate-spin"></i> Loading TV Shows...</div>
+        </div>
+      </section>
+
+      <!-- MOVIES SECTION (FEATURED BRAND NEW DAY) -->
+      <section id="moviesSection" class="max-w-7xl mx-auto px-6 mb-12">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2">
+            <span class="w-1.5 h-6 bg-yellow-400 rounded-full"></span> Top Movies (Featuring Brand New Day)
+          </h2>
+          <div class="flex items-center gap-2">
+            <button onclick="scrollRow('topMoviesRow', -300)" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-white flex items-center justify-center transition border border-slate-700">
+              <i class="fa-solid fa-chevron-left text-xs"></i>
+            </button>
+            <button onclick="scrollRow('topMoviesRow', 300)" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-white flex items-center justify-center transition border border-slate-700">
+              <i class="fa-solid fa-chevron-right text-xs"></i>
+            </button>
+          </div>
+        </div>
+
+        <div id="topMoviesRow" class="flex items-center gap-4 overflow-x-auto no-scrollbar scroll-smooth py-2">
+          <div class="text-yellow-400 font-semibold text-sm py-8"><i class="fa-solid fa-spinner animate-spin"></i> Loading Movies...</div>
+        </div>
+      </section>
+
+      <!-- ABOUT US SECTION -->
+      <section id="aboutSection" class="max-w-7xl mx-auto px-4 md:px-6 mb-12">
+        <div class="zenitsu-bg-card rounded-xl md:rounded-2xl p-6 sm:p-8 md:p-12 border border-yellow-400/30 relative overflow-hidden shadow-2xl">
+          <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 md:gap-6 mb-4 md:mb-6">
+            <div>
+              <span class="text-[10px] sm:text-xs font-bold text-yellow-400 uppercase tracking-widest bg-yellow-950/80 border border-yellow-800/80 px-3 py-1 rounded-full">Updated 2026</span>
+              <div class="mt-3 flex items-center gap-3">
+                <h3 class="brand-font text-3xl sm:text-4xl md:text-5xl font-black tracking-wider drop-shadow-md">
+                  About <span class="text-white">Zenitsu</span><span class="text-yellow-400">TV</span>
+                </h3>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 text-yellow-400 text-xs md:text-sm font-semibold bg-black/60 px-4 py-2 rounded-lg border border-yellow-400/20">
+              <i class="fa-solid fa-bolt text-yellow-400"></i> Anime, Movies & TV Shows
             </div>
           </div>
-          <div class="flex items-center gap-2 text-yellow-400 text-xs md:text-sm font-semibold bg-black/60 px-4 py-2 rounded-lg border border-yellow-400/20">
-            <i class="fa-solid fa-bolt text-yellow-400"></i> Anime, Movies & TV Shows
+          <div class="text-slate-200 text-xs sm:text-sm md:text-base leading-relaxed space-y-4 max-w-3xl drop-shadow">
+            <p>Welcome to <strong>ZenitsuTV</strong>! High speed infinite scroll library, strict adult/hentai content filters, ultra-responsive video player servers, fixed posters, and official streaming links.</p>
           </div>
         </div>
-        <div class="text-slate-200 text-xs sm:text-sm md:text-base leading-relaxed space-y-4 max-w-3xl drop-shadow">
-          <p>Welcome to <strong>ZenitsuTV</strong>! Streaming complete catalog of Movies, TV Shows, and Anime in high-speed low latency.</p>
-        </div>
-      </div>
-    </section>
-  </main>
+      </section>
+    </div>
 
-  <!-- CONTINUE WATCHING BAR -->
-  <div id="continueWatchingBar" class="fixed bottom-0 left-0 right-0 z-30 hidden bg-slate-900/95 backdrop-blur-lg border-t border-yellow-400/40 p-3 sm:p-4 transition-all">
-    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-      <div class="flex items-center gap-3 w-full sm:w-auto">
-        <div class="w-10 h-10 rounded-full bg-yellow-400/20 border border-yellow-400/50 flex items-center justify-center text-yellow-400 shrink-0">
-          <i class="fa-solid fa-rotate-left"></i>
-        </div>
-        <div class="truncate">
-          <div class="text-[10px] font-bold uppercase tracking-wider text-yellow-400">Continue Watching</div>
-          <div id="continueWatchingTitle" class="text-sm font-bold text-white truncate">Title</div>
+    <!-- INFINITE SCROLL LIBRARY GRID VIEW -->
+    <div id="libraryView" class="hidden max-w-7xl mx-auto px-4 md:px-6 mb-12">
+      <div class="flex items-center justify-between mb-6 border-b border-slate-800 pb-4">
+        <div>
+          <h2 id="libraryTitle" class="brand-font text-2xl md:text-4xl font-black text-white">Anime Library</h2>
+          <p id="librarySub" class="text-xs md:text-sm text-slate-400 mt-1">Scroll down to explore infinitely online.</p>
         </div>
       </div>
-      <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
-        <button onclick="resumeLastWatched()" class="ps-glow bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-300 hover:to-amber-400 text-black font-bold px-5 py-2 rounded-xl text-xs transition flex items-center justify-center gap-2 w-full sm:w-auto">
-          <i class="fa-solid fa-play"></i> Resume Playback
-        </button>
-        <button onclick="dismissContinueBar()" class="text-slate-400 hover:text-white px-2 py-2 text-xs transition">
-          <i class="fa-solid fa-xmark text-base"></i>
-        </button>
+
+      <div id="libraryGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"></div>
+
+      <!-- INFINITE SCROLL LOADER INDICATOR -->
+      <div id="infiniteLoader" class="text-center py-10 text-yellow-400 hidden">
+        <i class="fa-solid fa-spinner animate-spin text-2xl mb-2"></i>
+        <p class="text-xs font-semibold text-slate-400">Loading more titles...</p>
       </div>
     </div>
-  </div>
+
+  </main>
 
   <!-- DETAIL & STREAM MODAL -->
   <div id="detailModal" onclick="if(event.target === this) closeModal()" class="fixed inset-0 z-50 hidden flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md overflow-y-auto">
@@ -236,12 +295,11 @@
       </button>
 
       <!-- STREAM PLAYER CONTAINER -->
-      <div class="relative w-full aspect-video bg-black flex items-center justify-center">
+      <div class="relative w-full aspect-video bg-black flex items-center justify-center overflow-hidden">
         <div id="trailerLoader" class="text-slate-400 text-sm flex flex-col items-center gap-3 text-center px-4">
           <i class="fa-solid fa-spinner animate-spin text-yellow-400 text-2xl"></i> 
-          <span id="loaderText">Loading Stream...</span>
+          <span id="loaderText">Loading Trailer / Stream...</span>
         </div>
-        <div id="playerClickShield" onclick="dismissClickShield()" class="absolute inset-0 z-10 cursor-pointer hidden flex items-center justify-center bg-black/5"></div>
         <iframe id="modalTrailer" class="w-full h-full hidden relative z-20" src="" title="Media Stream" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" allowfullscreen></iframe>
       </div>
 
@@ -250,11 +308,11 @@
         <div class="flex items-center gap-2 flex-wrap">
           <span class="text-slate-400 font-bold flex items-center gap-1.5"><i class="fa-solid fa-server text-yellow-400"></i> Server:</span>
           <div class="flex items-center gap-1.5 flex-wrap">
-            <button onclick="switchServer(1)" id="srv1" class="bg-yellow-400 text-black font-bold px-3.5 py-1 rounded transition">Server 1</button>
-            <button onclick="switchServer(2)" id="srv2" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3.5 py-1 rounded transition">Server 2</button>
-            <button onclick="switchServer(3)" id="srv3" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3.5 py-1 rounded transition">Server 3</button>
-            <button onclick="switchServer(4)" id="srv4" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3.5 py-1 rounded transition">Server 4</button>
-            <button onclick="switchServer(5)" id="srv5" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3.5 py-1 rounded transition">Server 5</button>
+            <button onclick="switchServer(1)" id="srv1" class="bg-yellow-400 text-black font-bold px-3.5 py-1 rounded transition">Server 1 (VidLink)</button>
+            <button onclick="switchServer(2)" id="srv2" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3.5 py-1 rounded transition">Server 2 (AutoEmbed)</button>
+            <button onclick="switchServer(3)" id="srv3" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3.5 py-1 rounded transition">Server 3 (EmbedSu)</button>
+            <button onclick="switchServer(4)" id="srv4" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3.5 py-1 rounded transition">Server 4 (VidSrcICU)</button>
+            <button onclick="switchServer(5)" id="srv5" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3.5 py-1 rounded transition">Server 5 (VidSrcTO)</button>
           </div>
         </div>
         <button id="nextEpisodeBtn" onclick="playNextEpisode()" class="hidden bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-300 hover:to-amber-400 text-black font-bold px-3.5 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 shadow">
@@ -262,7 +320,7 @@
         </button>
       </div>
 
-      <!-- TV SEASONS / EPISODES -->
+      <!-- TV / ANIME SEASONS / EPISODES -->
       <div id="tvEpisodesSection" class="hidden bg-slate-900/80 border-b border-slate-800 p-4">
         <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
           <div class="flex items-center gap-3 flex-wrap">
@@ -275,7 +333,7 @@
               <span id="playingEpisodeText">NOW WATCHING: S1 E1</span>
             </div>
           </div>
-          <div class="flex items-center gap-2">
+          <div id="seasonContainer" class="flex items-center gap-2">
             <label class="text-xs text-slate-400 font-medium">Season:</label>
             <select id="seasonSelect" onchange="loadSeasonEpisodes()" class="bg-slate-800 text-white text-xs font-bold rounded px-2.5 py-1 border border-slate-700 focus:outline-none focus:border-yellow-400 cursor-pointer"></select>
           </div>
@@ -299,14 +357,14 @@
         <p id="modalDescription" class="text-slate-300 text-xs md:text-sm mb-6 leading-relaxed">Description</p>
         <div class="mb-8">
           <button id="mainPlayBtn" onclick="startStream(1)" class="w-full ps-glow bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-500 hover:opacity-95 text-black font-black text-base md:text-lg py-3.5 px-8 rounded-xl flex items-center justify-center gap-3 transition transform active:scale-95">
-            <i class="fa-solid fa-play text-lg"></i> PLAY NOW
+            <i class="fa-solid fa-play text-lg"></i> PLAY STREAM NOW
           </button>
         </div>
         <div id="castContainer" class="pt-6 border-t border-slate-800/80">
           <h4 class="text-sm md:text-base font-bold uppercase tracking-wider text-yellow-400 mb-4 flex items-center gap-2">
-            <i class="fa-solid fa-users text-lg"></i> Cast & Voice Actors
+            <i class="fa-solid fa-users text-lg"></i> Cast & Crew
           </h4>
-          <div id="castList" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 max-h-[420px] overflow-y-auto pr-2">
+          <div id="castList" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 max-h-[380px] overflow-y-auto pr-2">
             <span class="text-slate-500 text-xs col-span-full">Loading cast...</span>
           </div>
         </div>
@@ -315,321 +373,304 @@
   </div>
 
   <footer class="w-full py-6 border-t border-slate-900 bg-[#05070a] text-center">
-    <p class="text-xs text-slate-500 font-medium tracking-wide">ZenitsuTV © 2015 - 2026</p>
+    <p class="text-xs text-slate-500 font-medium tracking-wide">ZenitsuTV © 2015 - 2026 | SFW Non-Adult Stream Indexer</p>
   </footer>
 
   <script>
-    function acceptTerms() {
-      const termsModal = document.getElementById('termsModal');
-      if (termsModal) {
-        termsModal.style.display = 'none';
-        termsModal.classList.add('hidden');
-      }
-      document.body.style.overflow = 'auto';
-      checkContinueWatching();
-    }
-
-    function openLogoModal() {
-      document.getElementById('logoModal').classList.remove('hidden');
-      document.body.style.overflow = 'hidden';
-    }
-
-    function closeLogoModal() {
-      document.getElementById('logoModal').classList.add('hidden');
-      if (document.getElementById('detailModal').classList.contains('hidden') && 
-          document.getElementById('termsModal').classList.contains('hidden')) {
-        document.body.style.overflow = 'auto';
-      }
-    }
-
-    function dismissClickShield() {
-      document.getElementById('playerClickShield').classList.add('hidden');
-    }
-
-    function checkContinueWatching() {
-      const lastWatched = localStorage.getItem('zenitsu_last_watched');
-      if (lastWatched) {
-        try {
-          const data = JSON.parse(lastWatched);
-          const bar = document.getElementById('continueWatchingBar');
-          const titleElem = document.getElementById('continueWatchingTitle');
-          
-          let displayStr = data.title || "Last Watched Title";
-          if (data.type === 'tv') {
-            displayStr += ` (S${data.season || 1} E${data.episode || 1})`;
-          }
-          
-          titleElem.innerText = displayStr;
-          bar.classList.remove('hidden');
-        } catch(e) {}
-      }
-    }
-
-    function dismissContinueBar() {
-      document.getElementById('continueWatchingBar').classList.add('hidden');
-    }
-
-    async function resumeLastWatched() {
-      const lastWatched = localStorage.getItem('zenitsu_last_watched');
-      if (!lastWatched) return;
-      
-      try {
-        const data = JSON.parse(lastWatched);
-        await openModal(data.id, data.type);
-        if (data.type === 'tv' && data.season && data.episode) {
-          selectedSeason = data.season;
-          const seasonSelect = document.getElementById('seasonSelect');
-          if (seasonSelect) seasonSelect.value = selectedSeason;
-          await loadSeasonEpisodes();
-          selectEpisode(data.episode);
-        } else {
-          startStream(1);
-        }
-      } catch(e) {}
-    }
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        if (!document.getElementById('detailModal').classList.contains('hidden')) closeModal();
-        if (!document.getElementById('logoModal').classList.contains('hidden')) closeLogoModal();
-      }
-    });
-
     const TMDB_KEY = "e15be33701bb1a97defdc01b86af2ed9"; 
+    const FALLBACK_POSTER = "https://images.unsplash.com/photo-1578632767115-351597cf2477?w=500&auto=format&fit=crop";
 
-    // DYNAMIC NETWORK SPEED DETECTION FOR HIGHEST RES POSTERS AND 1080P TRAILERS
-    function getNetworkQuality() {
-      const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-      if (connection) {
-        if (connection.saveData) return 'slow';
-        if (['slow-2g', '2g', '3g'].includes(connection.effectiveType)) return 'slow';
-      }
-      return 'fast';
-    }
+    // NSFW / Hentai Filter Keywords
+    const NSFW_KEYWORDS = [
+      "hentai", "ecchi", "erotic", "uncensored sex", "adult anime", "hentai series", "18+ anime",
+      "overflow", "adam's sweet agony", "adams sweet agony", "sweet agony", "redo of healer", 
+      "yosuga no sora", "boku no pico", "kiss x sis", "interspecies reviewers"
+    ];
 
-    function getPosterSize() {
-      return (getNetworkQuality() === 'fast') ? 'original' : 'w500';
-    }
-
-    function getBackdropSize() {
-      return (getNetworkQuality() === 'fast') ? 'original' : 'w780';
-    }
-
-    function getTrailerParams() {
-      return (getNetworkQuality() === 'fast') ? 'vq=hd1080&hd=1' : 'vq=medium';
-    }
-
-    const FALLBACK_POSTER = "https://image.tmdb.org/t/p/original/m91f9P3B0S2809uS2r1p11v1p2y.jpg";
-
-    let currentCategory = 'trending';
-    let currentPage = 1;
-    let catalogItems = [];
     let activeMedia = { id: null, type: 'tv', title: '' };
     let selectedSeason = 1;
     let selectedEpisode = 1;
     let totalSeasonEpisodes = 1;
     let searchDebounce = null;
-    let scrollThrottle = null;
     let currentServer = 1;
-    let activeCategorySession = 0;
-    let isFetchingMore = false;
-    let featuredOnePieceObj = null;
+    let heroRotationItems = [];
+    let heroIndex = 0;
+    let heroTimer = null;
+
+    // Infinite Scroll State Variables
+    let currentLibraryType = 'anime';
+    let currentLibraryPage = 1;
+    let isFetchingLibrary = false;
+    let hasMorePages = true;
+
+    const apiCache = new Map();
+
+    async function fetchWithCache(url) {
+      if (apiCache.has(url)) return apiCache.get(url);
+      const res = await fetch(url);
+      if (!res.ok) throw new Error("Fetch failed");
+      const data = await res.json();
+      apiCache.set(url, data);
+      return data;
+    }
+
+    function acceptTerms() {
+      const modal = document.getElementById('termsModal');
+      if (modal) modal.classList.add('hidden');
+      document.body.style.overflow = 'auto';
+    }
+
+    function isHentaiOrAdult(item) {
+      if (!item) return true;
+      if (item.adult === true) return true;
+      const title = (item.title || item.name || "").toLowerCase();
+      const overview = (item.overview || "").toLowerCase();
+      
+      for (const kw of NSFW_KEYWORDS) {
+        if (title.includes(kw) || overview.includes(kw)) return true;
+      }
+      return false;
+    }
 
     function cleanStr(str) {
       if(!str) return "";
       return String(str).replace(/'/g, "&#39;").replace(/"/g, "&quot;");
     }
 
-    function isNotHentai(item) {
-      return true;
-    }
-
-    function getRealMediaType(item, typeHint) {
-      if (item && item.media_type) {
-        if (item.media_type === 'tv' || item.media_type === 'movie') return item.media_type;
+    function getPosterUrl(path) {
+      if (path && path !== "null" && path !== "undefined") {
+        return `https://image.tmdb.org/t/p/w500${path}`;
       }
-      if (item) {
-        if (item.first_air_date && !item.release_date) return 'tv';
-        if (item.release_date && !item.first_air_date) return 'movie';
-      }
-      return (typeHint === 'tv' || typeHint === 'anime') ? 'tv' : 'movie';
+      return FALLBACK_POSTER;
     }
 
-    async function resolveOnePieceFeatured() {
-      if (featuredOnePieceObj) return featuredOnePieceObj;
+    function showHomeView() {
+      document.getElementById('homeView').classList.remove('hidden');
+      document.getElementById('libraryView').classList.add('hidden');
       
-      try {
-        const res = await fetch(`https://api.themoviedb.org/3/tv/37854?api_key=${TMDB_KEY}`);
-        if (res.ok) {
-          const data = await res.json();
-          featuredOnePieceObj = {
-            ...data,
-            name: "One Piece",
-            title: "One Piece",
-            media_type: "tv"
-          };
-          return featuredOnePieceObj;
-        }
-      } catch(e){}
-
-      featuredOnePieceObj = {
-        id: 37854,
-        name: "One Piece",
-        title: "One Piece",
-        overview: "Monkey D. Luffy sets off with his pirate crew across the treacherous Grand Line to find the legendary treasure known as 'One Piece' and become the King of the Pirates.",
-        poster_path: "/cMD9Y11RseR2P0R82A3P3I3I.jpg",
-        backdrop_path: "/2rmK7221L33R31RchA93A0eL9.jpg",
-        vote_average: 8.9,
-        first_air_date: "1999-10-20",
-        media_type: "tv"
-      };
-      return featuredOnePieceObj;
+      document.getElementById('tabHome').className = "px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition bg-yellow-400 text-black shadow";
+      document.getElementById('tabAnime').className = "px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white";
+      document.getElementById('tabMovies').className = "px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white";
+      document.getElementById('tabTv').className = "px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white";
     }
 
-    function switchCategoryTab(category) {
-      currentCategory = category;
-      currentPage = 1;
-      
-      ['trending', 'anime', 'movie', 'tv'].forEach(cat => {
-        const btn = document.getElementById(`tab_${cat}`);
-        if (btn) {
-          btn.className = (cat === category) 
-            ? "cat-btn bg-yellow-400 text-black font-bold px-5 py-2 rounded-lg whitespace-nowrap"
-            : "cat-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-5 py-2 rounded-lg font-medium whitespace-nowrap";
-        }
-      });
+    function showLibraryView(type) {
+      currentLibraryType = type;
+      currentLibraryPage = 1;
+      hasMorePages = true;
+      isFetchingLibrary = false;
 
-      fetchCatalog(category, 1, false);
-    }
+      document.getElementById('homeView').classList.add('hidden');
+      document.getElementById('libraryView').classList.remove('hidden');
+      document.getElementById('libraryGrid').innerHTML = '';
 
-    async function fetchCatalog(category = 'trending', page = 1, append = false) {
-      if (isFetchingMore && append) return;
-      isFetchingMore = true;
+      const btnActive = "px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition bg-yellow-400 text-black shadow";
+      const btnInactive = "px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white";
 
-      const sessionId = ++activeCategorySession;
-      const grid = document.getElementById('contentGrid');
-      const loader = document.getElementById('infiniteLoader');
+      document.getElementById('tabHome').className = btnInactive;
+      document.getElementById('tabAnime').className = type === 'anime' ? btnActive : btnInactive;
+      document.getElementById('tabMovies').className = type === 'movie' ? btnActive : btnInactive;
+      document.getElementById('tabTv').className = type === 'tv' ? btnActive : btnInactive;
 
-      if (!append) {
-        grid.innerHTML = `<div class="col-span-full text-center py-16 text-yellow-400 font-semibold"><i class="fa-solid fa-spinner animate-spin text-3xl mb-3"></i><br>Loading Library...</div>`;
+      if (type === 'anime') {
+        document.getElementById('libraryTitle').innerText = "Anime Library";
+        document.getElementById('librarySub').innerText = "Scroll down to explore all SFW anime series.";
+      } else if (type === 'movie') {
+        document.getElementById('libraryTitle').innerText = "Movies Library";
+        document.getElementById('librarySub').innerText = "Scroll down to explore all movies online.";
       } else {
-        loader.classList.remove('hidden');
+        document.getElementById('libraryTitle').innerText = "TV Shows Library";
+        document.getElementById('librarySub').innerText = "Scroll down to explore all TV series online.";
       }
 
-      let endpoints = [];
-      for (let p = page; p < page + 2; p++) {
-        if (category === 'trending') {
-          endpoints.push(`https://api.themoviedb.org/3/trending/all/day?api_key=${TMDB_KEY}&page=${p}`);
-        } else if (category === 'anime') {
-          endpoints.push(`https://api.themoviedb.org/3/discover/tv?api_key=${TMDB_KEY}&with_genres=16&sort_by=popularity.desc&page=${p}`);
-          endpoints.push(`https://api.themoviedb.org/3/discover/movie?api_key=${TMDB_KEY}&with_genres=16&sort_by=popularity.desc&page=${p}`);
-        } else if (category === 'movie') {
-          endpoints.push(`https://api.themoviedb.org/3/movie/popular?api_key=${TMDB_KEY}&page=${p}`);
-        } else if (category === 'tv') {
-          endpoints.push(`https://api.themoviedb.org/3/tv/popular?api_key=${TMDB_KEY}&page=${p}`);
-        }
+      loadNextLibraryBatch();
+    }
+
+    async function loadNextLibraryBatch() {
+      if (isFetchingLibrary || !hasMorePages) return;
+      isFetchingLibrary = true;
+
+      const loader = document.getElementById('infiniteLoader');
+      loader.classList.remove('hidden');
+
+      let url = "";
+      if (currentLibraryType === 'anime') {
+        url = `https://api.themoviedb.org/3/discover/tv?api_key=${TMDB_KEY}&with_genres=16&include_adult=false&sort_by=popularity.desc&page=${currentLibraryPage}`;
+      } else if (currentLibraryType === 'movie') {
+        url = `https://api.themoviedb.org/3/discover/movie?api_key=${TMDB_KEY}&include_adult=false&sort_by=popularity.desc&page=${currentLibraryPage}`;
+      } else {
+        url = `https://api.themoviedb.org/3/discover/tv?api_key=${TMDB_KEY}&include_adult=false&sort_by=popularity.desc&page=${currentLibraryPage}`;
       }
 
       try {
-        const responses = await Promise.all(endpoints.map(url => fetch(url).catch(() => null)));
-        if (sessionId !== activeCategorySession) return;
-
-        let fetchedBatch = [];
-        for (let res of responses) {
-          if (res && res.ok) {
-            const data = await res.json();
-            if (data.results) fetchedBatch.push(...data.results);
+        const data = await fetchWithCache(url);
+        if (data && data.results && data.results.length > 0) {
+          const filtered = data.results.filter(item => !isHentaiOrAdult(item));
+          appendLibraryGrid(filtered, currentLibraryType === 'movie' ? 'movie' : 'tv');
+          
+          if (currentLibraryPage >= data.total_pages) {
+            hasMorePages = false;
+          } else {
+            currentLibraryPage++;
           }
-        }
-
-        fetchedBatch = Array.from(new Map(fetchedBatch.map(item => [item.id, item])).values());
-
-        if (category === 'trending' || category === 'anime') {
-          const onePieceObj = await resolveOnePieceFeatured();
-          fetchedBatch = [onePieceObj, ...fetchedBatch.filter(i => i.id !== onePieceObj.id)];
-        }
-
-        if (!append) {
-          catalogItems = fetchedBatch;
-          grid.innerHTML = '';
-          if (catalogItems.length > 0) setupHero(catalogItems[0], category);
         } else {
-          const existingIds = new Set(catalogItems.map(i => i.id));
-          const filteredNew = fetchedBatch.filter(i => !existingIds.has(i.id));
-          catalogItems = [...catalogItems, ...filteredNew];
-          fetchedBatch = filteredNew;
+          hasMorePages = false;
         }
-
-        if (catalogItems.length > 0) {
-          appendCardsToGrid(fetchedBatch, category);
-        } else if (!append) {
-          grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-500">No titles found.</div>`;
-        }
-      } catch (err) {
-        if (!append) grid.innerHTML = `<div class="col-span-full text-center py-12 text-red-500">Failed to load content.</div>`;
+      } catch(e) {
+        console.error("Library fetch error:", e);
       } finally {
-        isFetchingMore = false;
+        isFetchingLibrary = false;
         loader.classList.add('hidden');
       }
     }
 
-    window.addEventListener('scroll', () => {
-      if (scrollThrottle || isFetchingMore) return;
-      scrollThrottle = setTimeout(() => {
-        scrollThrottle = null;
-        const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-        if (scrollTop + clientHeight >= scrollHeight - 700) {
-          currentPage += 2;
-          fetchCatalog(currentCategory, currentPage, true);
-        }
-      }, 150);
-    });
-
-    function setupHero(item, fallbackType) {
-      if (!item) return;
-      const title = item.title || item.name || "Featured Title";
-      const desc = item.overview || "No overview available.";
-      
-      const bSize = getBackdropSize();
-      let backdrop = item.backdrop_path 
-        ? `https://image.tmdb.org/t/p/${bSize}${item.backdrop_path}` 
-        : FALLBACK_POSTER;
-
-      document.getElementById('heroTitle').innerText = title;
-      document.getElementById('heroDesc').innerText = desc;
-      document.getElementById('heroBg').style.backgroundImage = `url('${backdrop}')`;
-      
-      const realType = getRealMediaType(item, fallbackType);
-      document.getElementById('heroPlayBtn').onclick = () => openModal(item.id, realType);
-    }
-
-    function appendCardsToGrid(items, categoryType) {
-      const grid = document.getElementById('contentGrid');
-      const pSize = getPosterSize();
+    function appendLibraryGrid(items, type) {
+      const grid = document.getElementById('libraryGrid');
+      const fragment = document.createDocumentFragment();
 
       items.forEach(item => {
         const title = item.title || item.name || "Untitled";
-        const realType = getRealMediaType(item, categoryType);
         const year = (item.release_date || item.first_air_date || '2026').substring(0, 4);
         const rating = item.vote_average ? item.vote_average.toFixed(1) : "N/A";
-        
-        let posterUrl = item.poster_path 
-          ? `https://image.tmdb.org/t/p/${pSize}${item.poster_path}` 
-          : FALLBACK_POSTER;
+        const posterUrl = getPosterUrl(item.poster_path);
 
         const card = document.createElement('div');
-        card.className = "group relative rounded-xl overflow-hidden bg-slate-900 border border-slate-800 transition duration-300 transform hover:-translate-y-2 cursor-pointer ps-card-glow active:scale-95";
-        card.onclick = () => openModal(item.id, realType);
+        card.className = "group relative rounded-xl overflow-hidden bg-slate-900 border border-slate-800 transition duration-300 transform hover:-translate-y-2 cursor-pointer ps-card-glow active:scale-95 flex flex-col justify-between";
+        card.onclick = () => openModal(item.id, type);
 
         card.innerHTML = `
           <div class="aspect-[2/3] w-full overflow-hidden relative bg-slate-950">
-            <img src="${posterUrl}" 
-                 onerror="this.onerror=null; this.src='${FALLBACK_POSTER}';" 
-                 alt="${cleanStr(title)}" 
-                 class="w-full h-full object-cover group-hover:scale-105 transition duration-500" 
-                 loading="lazy" />
-            <div class="absolute top-2 left-2 bg-black/80 backdrop-blur-md text-[10px] font-bold text-yellow-400 px-2 py-0.5 rounded border border-yellow-400/30 uppercase">
-              ${realType}
+            <img src="${posterUrl}" onerror="this.onerror=null; this.src='${FALLBACK_POSTER}';" alt="${cleanStr(title)}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" loading="lazy" />
+            <div class="absolute top-2 right-2 bg-black/80 backdrop-blur-md text-xs font-bold text-yellow-400 px-2 py-0.5 rounded flex items-center gap-1">
+              <i class="fa-solid fa-star text-[10px]"></i> ${rating}
+            </div>
+          </div>
+          <div class="p-3 flex-grow flex flex-col justify-between">
+            <h3 class="text-xs sm:text-sm font-bold text-white truncate group-hover:text-yellow-400 transition">${cleanStr(title)}</h3>
+            <p class="text-[10px] sm:text-xs text-slate-400 mt-1">${year}</p>
+          </div>
+        `;
+        fragment.appendChild(card);
+      });
+
+      grid.appendChild(fragment);
+    }
+
+    // INFINITE SCROLL EVENT LISTENER
+    window.addEventListener('scroll', () => {
+      const libraryView = document.getElementById('libraryView');
+      if (libraryView && !libraryView.classList.contains('hidden')) {
+        const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+        if (scrollTop + clientHeight >= scrollHeight - 700) {
+          loadNextLibraryBatch();
+        }
+      }
+    });
+
+    // FETCH ANIME (FEATURING ONE PIECE AT TOP / FIRST PLACE)
+    async function loadTop10Anime() {
+      const container = document.getElementById('topAnimeRow');
+      container.innerHTML = `<div class="text-yellow-400 font-semibold text-sm py-8"><i class="fa-solid fa-spinner animate-spin"></i> Loading Anime...</div>`;
+
+      try {
+        const opData = await fetchWithCache(`https://api.themoviedb.org/3/tv/37854?api_key=${TMDB_KEY}`);
+        const data = await fetchWithCache(`https://api.themoviedb.org/3/discover/tv?api_key=${TMDB_KEY}&with_genres=16&include_adult=false&sort_by=popularity.desc&page=1`);
+        
+        let animeList = [];
+        if (opData && opData.id) animeList.push(opData);
+
+        if (data && data.results) {
+          const sfwAnime = data.results.filter(item => item.id !== 37854 && !isHentaiOrAdult(item));
+          animeList = animeList.concat(sfwAnime);
+        }
+
+        const finalAnime = animeList.slice(0, 10);
+        renderHorizontalRow(finalAnime, 'topAnimeRow', 'tv');
+        
+        heroRotationItems = finalAnime;
+        if (heroRotationItems.length > 0) {
+          setupHero(heroRotationItems[0]);
+          if (heroTimer) clearInterval(heroTimer);
+          heroTimer = setInterval(rotateHeroBanner, 7000);
+        }
+      } catch (err) {
+        container.innerHTML = `<div class="text-red-500 text-sm py-6">Failed to load anime.</div>`;
+      }
+    }
+
+    // FETCH TV SHOWS (FEATURING THE MENTALIST)
+    async function loadTop10TvShows() {
+      const container = document.getElementById('topTvRow');
+      container.innerHTML = `<div class="text-yellow-400 font-semibold text-sm py-8"><i class="fa-solid fa-spinner animate-spin"></i> Loading TV Shows...</div>`;
+
+      try {
+        const mentalistData = await fetchWithCache(`https://api.themoviedb.org/3/tv/5920?api_key=${TMDB_KEY}`);
+        const data = await fetchWithCache(`https://api.themoviedb.org/3/trending/tv/week?api_key=${TMDB_KEY}&include_adult=false`);
+
+        let tvList = [];
+        if (mentalistData && mentalistData.id) tvList.push(mentalistData);
+
+        if (data && data.results) {
+          const nonAnimeTv = data.results.filter(item => item.id !== 5920 && !(item.genre_ids && item.genre_ids.includes(16)) && !isHentaiOrAdult(item));
+          tvList = tvList.concat(nonAnimeTv);
+        }
+
+        renderHorizontalRow(tvList.slice(0, 10), 'topTvRow', 'tv');
+      } catch (err) {
+        container.innerHTML = `<div class="text-red-500 text-sm py-6">Failed to load TV shows.</div>`;
+      }
+    }
+
+    // FETCH MOVIES (FEATURING BRAND NEW DAY)
+    async function loadTop10Movies() {
+      const container = document.getElementById('topMoviesRow');
+      container.innerHTML = `<div class="text-yellow-400 font-semibold text-sm py-8"><i class="fa-solid fa-spinner animate-spin"></i> Loading Movies...</div>`;
+
+      try {
+        let brandNewDay = null;
+        try {
+          const searchM = await fetchWithCache(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB_KEY}&query=Brand%20New%20Day`);
+          if (searchM && searchM.results && searchM.results.length > 0) {
+            brandNewDay = searchM.results[0];
+          }
+        } catch(e) {}
+
+        const data = await fetchWithCache(`https://api.themoviedb.org/3/trending/movie/week?api_key=${TMDB_KEY}&include_adult=false`);
+        let movieList = [];
+        
+        if (brandNewDay) movieList.push(brandNewDay);
+
+        if (data && data.results) {
+          const sfwMovies = data.results.filter(item => (!brandNewDay || item.id !== brandNewDay.id) && !isHentaiOrAdult(item));
+          movieList = movieList.concat(sfwMovies);
+        }
+
+        renderHorizontalRow(movieList.slice(0, 10), 'topMoviesRow', 'movie');
+      } catch (err) {
+        container.innerHTML = `<div class="text-red-500 text-sm py-6">Failed to load movies.</div>`;
+      }
+    }
+
+    function renderHorizontalRow(items, targetContainerId, mediaType) {
+      const container = document.getElementById(targetContainerId);
+      container.innerHTML = '';
+      const fragment = document.createDocumentFragment();
+
+      items.forEach((item, index) => {
+        const title = item.title || item.name || "Untitled";
+        const year = (item.release_date || item.first_air_date || '2026').substring(0, 4);
+        const rating = item.vote_average ? item.vote_average.toFixed(1) : "N/A";
+        const posterUrl = getPosterUrl(item.poster_path);
+
+        const card = document.createElement('div');
+        card.className = "flex-none w-40 sm:w-48 group relative rounded-xl overflow-hidden bg-slate-900 border border-slate-800 transition duration-300 transform hover:-translate-y-2 cursor-pointer ps-card-glow active:scale-95";
+        card.onclick = () => openModal(item.id, mediaType);
+
+        card.innerHTML = `
+          <div class="aspect-[2/3] w-full overflow-hidden relative bg-slate-950">
+            <img src="${posterUrl}" onerror="this.onerror=null; this.src='${FALLBACK_POSTER}';" alt="${cleanStr(title)}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" loading="lazy" />
+            <div class="absolute top-2 left-2 bg-yellow-400 text-black font-black text-xs px-2 py-0.5 rounded shadow">
+              #${index + 1}
             </div>
             <div class="absolute top-2 right-2 bg-black/80 backdrop-blur-md text-xs font-bold text-yellow-400 px-2 py-0.5 rounded flex items-center gap-1">
               <i class="fa-solid fa-star text-[10px]"></i> ${rating}
@@ -640,39 +681,80 @@
             <p class="text-[10px] sm:text-xs text-slate-400 mt-1">${year}</p>
           </div>
         `;
-        grid.appendChild(card);
+        fragment.appendChild(card);
+      });
+
+      container.appendChild(fragment);
+    }
+
+    function scrollRow(elementId, amount) {
+      const container = document.getElementById(elementId);
+      if (container) container.scrollBy({ left: amount, behavior: 'smooth' });
+    }
+
+    function rotateHeroBanner() {
+      if (!heroRotationItems || heroRotationItems.length === 0) return;
+      heroIndex = (heroIndex + 1) % heroRotationItems.length;
+      setupHero(heroRotationItems[heroIndex]);
+    }
+
+    function setupHero(item) {
+      if (!item) return;
+      const title = item.title || item.name || "Featured Media";
+      const desc = item.overview || "No overview available.";
+      
+      const posterEl = document.getElementById('hero-poster');
+      const trailerEl = document.getElementById('hero-trailer');
+      let backdrop = item.backdrop_path ? `https://image.tmdb.org/t/p/original${item.backdrop_path}` : getPosterUrl(item.poster_path);
+
+      document.getElementById('heroTitle').innerText = title;
+      document.getElementById('heroDesc').innerText = desc;
+      if (posterEl) posterEl.src = backdrop;
+
+      const mediaType = (item.title) ? 'movie' : 'tv';
+      document.getElementById('heroPlayBtn').onclick = () => openModal(item.id, mediaType);
+
+      fetchTrailerKey(item.id, mediaType).then(videoKey => {
+        if (videoKey && trailerEl) {
+          trailerEl.src = `https://www.youtube.com/embed/${videoKey}?autoplay=1&muted=1&loop=1&controls=0&vq=hd1080&enablejsapi=1`;
+          trailerEl.classList.add('is-loaded');
+        } else if (trailerEl) {
+          trailerEl.classList.remove('is-loaded');
+          trailerEl.src = "";
+        }
       });
     }
 
     function debounceSearch() {
       clearTimeout(searchDebounce);
-      searchDebounce = setTimeout(performSearch, 250);
+      searchDebounce = setTimeout(performSearch, 300);
     }
 
     async function performSearch() {
       const query = document.getElementById('searchInput').value.trim();
       if (!query) {
-        switchCategoryTab('trending');
+        showHomeView();
+        loadTop10Anime();
+        loadTop10Movies();
+        loadTop10TvShows();
         return;
       }
 
-      activeCategorySession++;
-      const grid = document.getElementById('contentGrid');
-      grid.innerHTML = `<div class="col-span-full text-center py-12 text-yellow-400 font-semibold"><i class="fa-solid fa-spinner animate-spin text-2xl mb-2"></i><br>Searching "${query}"...</div>`;
+      showHomeView();
+      const animeContainer = document.getElementById('topAnimeRow');
+      animeContainer.innerHTML = `<div class="text-yellow-400 text-sm py-8"><i class="fa-solid fa-spinner animate-spin"></i> Searching "${query}"...</div>`;
 
       try {
-        const res = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${TMDB_KEY}&query=${encodeURIComponent(query)}`);
-        const data = await res.json();
+        const data = await fetchWithCache(`https://api.themoviedb.org/3/search/multi?api_key=${TMDB_KEY}&query=${encodeURIComponent(query)}&include_adult=false`);
         
         if (data.results && data.results.length > 0) {
-          catalogItems = data.results;
-          grid.innerHTML = '';
-          appendCardsToGrid(data.results, 'search');
+          const sfwResults = data.results.filter(item => !isHentaiOrAdult(item));
+          renderHorizontalRow(sfwResults.slice(0, 10), 'topAnimeRow', 'tv');
         } else {
-          grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-500">No titles found for "${query}".</div>`;
+          animeContainer.innerHTML = `<div class="text-slate-500 text-sm py-6">No results found for "${query}".</div>`;
         }
       } catch (err) {
-        grid.innerHTML = `<div class="col-span-full text-center py-12 text-red-500">Search error.</div>`;
+        animeContainer.innerHTML = `<div class="text-red-500 text-sm py-6">Search error.</div>`;
       }
     }
 
@@ -680,16 +762,14 @@
       const castList = document.getElementById('castList');
       castList.innerHTML = `<span class="text-slate-500 text-xs col-span-full py-4"><i class="fa-solid fa-spinner animate-spin text-yellow-400"></i> Loading cast...</span>`;
 
-      const pSize = getPosterSize();
-
       try {
-        const res = await fetch(`https://api.themoviedb.org/3/${endpoint}/${id}/credits?api_key=${TMDB_KEY}`);
-        const data = await res.json();
+        const data = await fetchWithCache(`https://api.themoviedb.org/3/${endpoint}/${id}/credits?api_key=${TMDB_KEY}`);
 
         if (data.cast && data.cast.length > 0) {
+          const fragment = document.createDocumentFragment();
           castList.innerHTML = '';
           data.cast.slice(0, 8).forEach(actor => {
-            const profilePic = actor.profile_path ? `https://image.tmdb.org/t/p/${pSize}${actor.profile_path}` : FALLBACK_POSTER;
+            const profilePic = getPosterUrl(actor.profile_path);
             
             const castCard = document.createElement('div');
             castCard.className = "group bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg hover:border-yellow-400/60 transition duration-300";
@@ -703,8 +783,9 @@
                 <p class="text-slate-400 text-[10px] truncate mt-0.5">${cleanStr(actor.character) || 'Cast'}</p>
               </div>
             `;
-            castList.appendChild(castCard);
+            fragment.appendChild(castCard);
           });
+          castList.appendChild(fragment);
         } else {
           castList.innerHTML = `<span class="text-slate-500 text-xs col-span-full py-4">No cast details found.</span>`;
         }
@@ -715,8 +796,7 @@
 
     async function fetchTrailerKey(id, mediaEndpoint) {
       try {
-        let res = await fetch(`https://api.themoviedb.org/3/${mediaEndpoint}/${id}/videos?api_key=${TMDB_KEY}`);
-        let data = await res.json();
+        let data = await fetchWithCache(`https://api.themoviedb.org/3/${mediaEndpoint}/${id}/videos?api_key=${TMDB_KEY}`);
         let videos = (data && data.results) ? data.results : [];
 
         if (videos.length > 0) {
@@ -728,20 +808,13 @@
       return null;
     }
 
-    async function openModal(id, type) {
+    async function openModal(id, mediaEndpoint = 'tv') {
       document.body.style.overflow = 'hidden';
 
-      let item = catalogItems.find(i => i.id === id);
-      const mediaEndpoint = getRealMediaType(item, type);
-
-      if (!item && id !== 37854) {
-        try {
-          const res = await fetch(`https://api.themoviedb.org/3/${mediaEndpoint}/${id}?api_key=${TMDB_KEY}`);
-          item = await res.json();
-        } catch(e) {}
-      } else if (id === 37854) {
-        item = await resolveOnePieceFeatured();
-      }
+      let item = null;
+      try {
+        item = await fetchWithCache(`https://api.themoviedb.org/3/${mediaEndpoint}/${id}?api_key=${TMDB_KEY}`);
+      } catch(e) {}
 
       let title = item ? (item.title || item.name || "Untitled") : "Title";
       const desc = item ? (item.overview || "No description available.") : "No description available.";
@@ -778,15 +851,14 @@
       trailerFrame.classList.add('hidden');
       trailerFrame.src = "";
       loader.classList.remove('hidden');
-      document.getElementById('loaderText').innerText = "Loading Stream...";
+      document.getElementById('loaderText').innerText = "Loading Trailer...";
       
       modal.classList.remove('hidden');
 
       const videoKey = await fetchTrailerKey(id, mediaEndpoint);
 
       if (videoKey) {
-        const trailerParams = getTrailerParams();
-        trailerFrame.src = `https://www.youtube.com/embed/${videoKey}?autoplay=1&rel=0&${trailerParams}`;
+        trailerFrame.src = `https://www.youtube.com/embed/${videoKey}?autoplay=1&rel=0`;
         trailerFrame.classList.remove('hidden');
         loader.classList.add('hidden');
       } else {
@@ -794,20 +866,28 @@
           <div class="flex flex-col items-center gap-2">
             <i class="fa-solid fa-film text-3xl text-slate-600"></i>
             <span class="text-sm text-slate-300 font-bold">Trailer Unavailable</span>
-            <span class="text-xs text-slate-500">Click "PLAY NOW" below to stream directly.</span>
+            <span class="text-xs text-slate-500">Click "PLAY STREAM NOW" below to start watching.</span>
           </div>
         `;
       }
     }
 
     async function fetchTvDetailsAndSeasons(tvId) {
+      const seasonContainer = document.getElementById('seasonContainer');
       const seasonSelect = document.getElementById('seasonSelect');
-      seasonSelect.innerHTML = `<option>Loading...</option>`;
 
       try {
-        const res = await fetch(`https://api.themoviedb.org/3/tv/${tvId}?api_key=${TMDB_KEY}`);
-        const data = await res.json();
+        const data = await fetchWithCache(`https://api.themoviedb.org/3/tv/${tvId}?api_key=${TMDB_KEY}`);
 
+        if (tvId === 37854) {
+          seasonContainer.classList.add('hidden');
+          selectedSeason = 1;
+          selectedEpisode = 1;
+          renderOnePieceRealEpisodes(data.number_of_episodes || 1100);
+          return;
+        }
+
+        seasonContainer.classList.remove('hidden');
         seasonSelect.innerHTML = '';
         if (data.seasons && data.seasons.length > 0) {
           const validSeasons = data.seasons.filter(s => s.season_number >= 0 && s.episode_count > 0);
@@ -832,20 +912,47 @@
       }
     }
 
+    function renderOnePieceRealEpisodes(totalEpisodes) {
+      const episodesList = document.getElementById('episodesList');
+      episodesList.innerHTML = '';
+      totalSeasonEpisodes = totalEpisodes;
+      selectedEpisode = 1;
+
+      const fragment = document.createDocumentFragment();
+      for (let i = 1; i <= totalEpisodes; i++) {
+        const epBtn = document.createElement('button');
+        epBtn.className = `ep-btn text-xs font-semibold px-3 py-2 rounded-lg border text-left transition flex items-center gap-2 truncate max-w-[210px] ${
+          i === 1 ? 'bg-yellow-400 border-yellow-300 text-black font-bold' : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'
+        }`;
+        epBtn.id = `epBtn_${i}`;
+        epBtn.setAttribute('data-epnum', i);
+        epBtn.onclick = () => selectEpisode(i);
+
+        epBtn.innerHTML = `
+          <span class="bg-black/40 px-1.5 py-0.5 rounded text-[10px] text-yellow-300">E${i}</span>
+          <span class="truncate">Episode ${i}</span>
+        `;
+        fragment.appendChild(epBtn);
+      }
+      episodesList.appendChild(fragment);
+    }
+
     async function loadSeasonEpisodes() {
+      if (activeMedia.id === 37854) return;
+
       selectedSeason = document.getElementById('seasonSelect').value || 1;
       const episodesList = document.getElementById('episodesList');
       episodesList.innerHTML = `<div class="text-yellow-400 text-xs py-2"><i class="fa-solid fa-spinner animate-spin"></i> Fetching episodes...</div>`;
 
       try {
-        const res = await fetch(`https://api.themoviedb.org/3/tv/${activeMedia.id}/season/${selectedSeason}?api_key=${TMDB_KEY}`);
-        const data = await res.json();
+        const data = await fetchWithCache(`https://api.themoviedb.org/3/tv/${activeMedia.id}/season/${selectedSeason}?api_key=${TMDB_KEY}`);
 
         episodesList.innerHTML = '';
         if (data.episodes && data.episodes.length > 0) {
           totalSeasonEpisodes = data.episodes.length;
           selectedEpisode = data.episodes[0].episode_number;
 
+          const fragment = document.createDocumentFragment();
           data.episodes.forEach((ep, idx) => {
             const isSelected = (idx === 0);
             const epBtn = document.createElement('button');
@@ -860,8 +967,9 @@
               <span class="bg-black/40 px-1.5 py-0.5 rounded text-[10px] text-yellow-300">E${ep.episode_number}</span>
               <span class="truncate">${cleanStr(ep.name) || 'Episode ' + ep.episode_number}</span>
             `;
-            episodesList.appendChild(epBtn);
+            fragment.appendChild(epBtn);
           });
+          episodesList.appendChild(fragment);
         } else {
           renderFallbackEpisodes(24);
         }
@@ -876,6 +984,7 @@
       totalSeasonEpisodes = count;
       selectedEpisode = 1;
 
+      const fragment = document.createDocumentFragment();
       for (let i = 1; i <= count; i++) {
         const epBtn = document.createElement('button');
         epBtn.className = `ep-btn text-xs font-semibold px-3 py-2 rounded-lg border text-left transition flex items-center gap-2 truncate max-w-[210px] ${
@@ -889,8 +998,9 @@
           <span class="bg-black/40 px-1.5 py-0.5 rounded text-[10px] text-yellow-300">E${i}</span>
           <span class="truncate">Episode ${i}</span>
         `;
-        episodesList.appendChild(epBtn);
+        fragment.appendChild(epBtn);
       }
+      episodesList.appendChild(fragment);
     }
 
     function selectEpisode(epNum) {
@@ -917,14 +1027,8 @@
       if (!activeMedia.id) return;
       currentServer = serverNum;
 
-      localStorage.setItem('zenitsu_last_watched', JSON.stringify({
-        id: activeMedia.id,
-        type: activeMedia.type,
-        title: activeMedia.title,
-        season: selectedSeason,
-        episode: selectedEpisode
-      }));
-      checkContinueWatching();
+      const isOnePiece = (activeMedia.id === 37854);
+      const effectiveSeason = isOnePiece ? 1 : selectedSeason;
 
       const trailerFrame = document.getElementById('modalTrailer');
       const loader = document.getElementById('trailerLoader');
@@ -940,7 +1044,7 @@
 
       if (!isMovie) {
         banner.classList.remove('hidden');
-        bannerText.innerText = `NOW WATCHING: S${selectedSeason} E${selectedEpisode}`;
+        bannerText.innerText = isOnePiece ? `NOW WATCHING: Episode ${selectedEpisode}` : `NOW WATCHING: S${selectedSeason} E${selectedEpisode}`;
         nextBtn.classList.remove('hidden');
       } else {
         banner.classList.add('hidden');
@@ -951,24 +1055,24 @@
 
       if (serverNum === 1) {
         streamUrl = isMovie 
-          ? `https://vidsrc.to/embed/movie/${activeMedia.id}`
-          : `https://vidsrc.to/embed/tv/${activeMedia.id}/${selectedSeason}/${selectedEpisode}`;
+          ? `https://vidlink.pro/movie/${activeMedia.id}`
+          : `https://vidlink.pro/tv/${activeMedia.id}/${effectiveSeason}/${selectedEpisode}`;
       } else if (serverNum === 2) {
         streamUrl = isMovie 
-          ? `https://vidsrc.me/embed/movie?tmdb=${activeMedia.id}`
-          : `https://vidsrc.me/embed/tv?tmdb=${activeMedia.id}&season=${selectedSeason}&episode=${selectedEpisode}`;
+          ? `https://watch-v2.autoembed.cc/movie/${activeMedia.id}`
+          : `https://watch-v2.autoembed.cc/tv/${activeMedia.id}/${effectiveSeason}/${selectedEpisode}`;
       } else if (serverNum === 3) {
         streamUrl = isMovie
-          ? `https://vidsrc.cc/v2/embed/movie/${activeMedia.id}`
-          : `https://vidsrc.cc/v2/embed/tv/${activeMedia.id}/${selectedSeason}/${selectedEpisode}`;
+          ? `https://embed.su/embed/movie/${activeMedia.id}`
+          : `https://embed.su/embed/tv/${activeMedia.id}/${effectiveSeason}/${selectedEpisode}`;
       } else if (serverNum === 4) {
         streamUrl = isMovie
-          ? `https://vidsrc.pro/embed/movie/${activeMedia.id}`
-          : `https://vidsrc.pro/embed/tv/${activeMedia.id}/${selectedSeason}/${selectedEpisode}`;
+          ? `https://vidsrc.icu/embed/movie/${activeMedia.id}`
+          : `https://vidsrc.icu/embed/tv/${activeMedia.id}/${effectiveSeason}/${selectedEpisode}`;
       } else if (serverNum === 5) {
         streamUrl = isMovie
-          ? `https://vidsrc.icu/embed/movie/${activeMedia.id}`
-          : `https://vidsrc.icu/embed/tv/${activeMedia.id}/${selectedSeason}/${selectedEpisode}`;
+          ? `https://vidsrc.to/embed/movie/${activeMedia.id}`
+          : `https://vidsrc.to/embed/tv/${activeMedia.id}/${effectiveSeason}/${selectedEpisode}`;
       }
 
       trailerFrame.src = streamUrl;
@@ -1001,12 +1105,15 @@
       
       document.getElementById('serverBar').classList.add('hidden');
       document.getElementById('playingEpisodeBanner').classList.add('hidden');
-      document.getElementById('playerClickShield').classList.add('hidden');
 
       document.body.style.overflow = 'auto';
     }
 
-    fetchCatalog('trending', 1, false);
+    document.addEventListener('DOMContentLoaded', () => {
+      loadTop10Anime();
+      loadTop10TvShows();
+      loadTop10Movies();
+    });
   </script>
 </body>
 </html>
