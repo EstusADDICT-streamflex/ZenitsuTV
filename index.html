@@ -56,7 +56,7 @@
     }
     
     .hero-banner { position: relative; width: 100%; height: 55vh; min-height: 420px; max-height: 580px; }
-    .hero-poster, .hero-video {
+    .hero-poster {
       position: absolute;
       top: 0;
       left: 0;
@@ -64,14 +64,6 @@
       height: 100%;
       object-fit: cover;
     }
-
-    .hero-video {
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.7s ease-in-out;
-    }
-
-    .hero-video.is-loaded { opacity: 1; pointer-events: auto; }
 
     ::-webkit-scrollbar { width: 8px; height: 8px; }
     ::-webkit-scrollbar-track { background: #07090e; }
@@ -96,7 +88,7 @@
       <div class="text-slate-300 text-sm leading-relaxed space-y-3 mb-6 bg-slate-900/60 p-4 rounded-xl border border-slate-800 text-left">
         <p class="font-medium">Welcome to <strong class="brand-font"><span class="text-white">Zenitsu</span><span class="text-yellow-400">TV</span></strong>. Accept terms to enter:</p>
         <ul class="list-disc list-inside space-y-1 text-slate-400 text-xs">
-          <li>Strictly non-adult / non-hentai anime and family-friendly content catalog.</li>
+          <li>We value the respected copyright owners.</li>
           <li>Personal non-commercial streaming only.</li>
         </ul>
       </div>
@@ -110,7 +102,7 @@
   <header class="fixed top-0 left-0 right-0 z-40 glass-nav px-4 md:px-6 py-4 transition-all duration-300">
     <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
       <div class="flex items-center gap-8">
-        <button onclick="showHomeView()" class="brand-font text-2xl md:text-3xl font-black tracking-tight flex items-center focus:outline-none hover:opacity-90 transition">
+        <button onclick="triggerLogoClick()" class="brand-font text-2xl md:text-3xl font-black tracking-tight flex items-center focus:outline-none hover:opacity-90 transition">
           <span class="text-white">Zenitsu</span><span class="text-yellow-400">TV</span>
         </button>
         <nav class="hidden md:flex items-center gap-6 text-sm font-semibold text-gray-300">
@@ -133,7 +125,6 @@
   <!-- MAIN HERO BANNER AT TOP OF ALL SECTIONS -->
   <section class="mt-16 relative w-full hero-banner overflow-hidden bg-black border-b border-slate-800">
     <img id="hero-poster" class="hero-poster" alt="Hero Banner" src="https://image.tmdb.org/t/p/original/m91f9P3B0S2809uS2r1p11v1p2y.jpg" />
-    <iframe id="hero-trailer" class="hero-video" src="" frameborder="0" allow="autoplay; encrypted-media"></iframe>
 
     <div class="absolute inset-0 bg-gradient-to-t from-[#07090e] via-transparent to-transparent z-10"></div>
     <div class="absolute inset-0 bg-gradient-to-r from-[#07090e]/90 via-[#07090e]/40 to-transparent z-10"></div>
@@ -151,6 +142,31 @@
       </div>
     </div>
   </section>
+
+  <!-- INSTAGRAM / WHATSAPP FEEDBACK BANNER (DISPLAYS WHEN LOGO IS CLICKED) -->
+  <div id="feedbackBanner" class="hidden max-w-7xl mx-auto px-4 md:px-6 pt-6">
+    <div class="bg-gradient-to-r from-yellow-500/10 via-amber-500/20 to-yellow-500/10 border border-yellow-400/40 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-yellow-400/20 border border-yellow-400/40 flex items-center justify-center text-yellow-400 text-lg">
+          <i class="fa-solid fa-comments"></i>
+        </div>
+        <div>
+          <h4 class="text-sm font-bold text-white">We'd love your thoughts!</h4>
+          <p class="text-xs text-slate-300">Make sure to give feedback on Instagram <strong class="text-yellow-400">ZenitsuTV</strong></p>
+        </div>
+      </div>
+      
+      <!-- SMALL ROUND SOCIAL LOGOS -->
+      <div class="flex items-center gap-3">
+        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" title="Instagram" class="w-9 h-9 rounded-full bg-gradient-to-tr from-yellow-500 via-pink-500 to-purple-600 flex items-center justify-center text-white text-base shadow-md hover:scale-110 transition transform">
+          <i class="fa-brands fa-instagram"></i>
+        </a>
+        <a href="https://whatsapp.com" target="_blank" rel="noopener noreferrer" title="WhatsApp" class="w-9 h-9 rounded-full bg-emerald-500 flex items-center justify-center text-white text-base shadow-md hover:scale-110 transition transform">
+          <i class="fa-brands fa-whatsapp"></i>
+        </a>
+      </div>
+    </div>
+  </div>
 
   <!-- MAIN CONTENT CONTAINER -->
   <main class="pb-16 flex-grow">
@@ -171,9 +187,6 @@
           <button onclick="showLibraryView('tv')" id="tabTv" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white">
             <i class="fa-solid fa-tv text-yellow-400"></i> TV Shows Library
           </button>
-        </div>
-        <div class="text-xs text-slate-400 hidden sm:block font-medium">
-          <i class="fa-solid fa-ban text-red-400"></i> Strict SFW Hentai-Free Filter
         </div>
       </div>
     </div>
@@ -261,7 +274,7 @@
             </div>
           </div>
           <div class="text-slate-200 text-xs sm:text-sm md:text-base leading-relaxed space-y-4 max-w-3xl drop-shadow">
-            <p>Welcome to <strong>ZenitsuTV</strong>! High speed infinite scroll library, strict adult/hentai content filters, ultra-responsive video player servers, fixed posters, and official streaming links.</p>
+            <p>Welcome to <strong>ZenitsuTV</strong>! High speed infinite scroll library, ultra-responsive video player servers, fixed posters, and official streaming links.</p>
           </div>
         </div>
       </section>
@@ -308,11 +321,11 @@
         <div class="flex items-center gap-2 flex-wrap">
           <span class="text-slate-400 font-bold flex items-center gap-1.5"><i class="fa-solid fa-server text-yellow-400"></i> Server:</span>
           <div class="flex items-center gap-1.5 flex-wrap">
-            <button onclick="switchServer(1)" id="srv1" class="bg-yellow-400 text-black font-bold px-3.5 py-1 rounded transition">Server 1 (VidLink)</button>
-            <button onclick="switchServer(2)" id="srv2" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3.5 py-1 rounded transition">Server 2 (AutoEmbed)</button>
-            <button onclick="switchServer(3)" id="srv3" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3.5 py-1 rounded transition">Server 3 (EmbedSu)</button>
-            <button onclick="switchServer(4)" id="srv4" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3.5 py-1 rounded transition">Server 4 (VidSrcICU)</button>
-            <button onclick="switchServer(5)" id="srv5" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3.5 py-1 rounded transition">Server 5 (VidSrcTO)</button>
+            <button onclick="switchServer(1)" id="srv1" class="bg-yellow-400 text-black font-bold px-3.5 py-1 rounded transition">Server 1</button>
+            <button onclick="switchServer(2)" id="srv2" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3.5 py-1 rounded transition">Server 2</button>
+            <button onclick="switchServer(3)" id="srv3" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3.5 py-1 rounded transition">Server 3</button>
+            <button onclick="switchServer(4)" id="srv4" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3.5 py-1 rounded transition">Server 4</button>
+            <button onclick="switchServer(5)" id="srv5" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3.5 py-1 rounded transition">Server 5</button>
           </div>
         </div>
         <button id="nextEpisodeBtn" onclick="playNextEpisode()" class="hidden bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-300 hover:to-amber-400 text-black font-bold px-3.5 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 shadow">
@@ -373,19 +386,12 @@
   </div>
 
   <footer class="w-full py-6 border-t border-slate-900 bg-[#05070a] text-center">
-    <p class="text-xs text-slate-500 font-medium tracking-wide">ZenitsuTV © 2015 - 2026 | SFW Non-Adult Stream Indexer</p>
+    <p class="text-xs text-slate-500 font-medium tracking-wide">ZenitsuTV © 2015 - 2026 | Streaming Indexer</p>
   </footer>
 
   <script>
     const TMDB_KEY = "e15be33701bb1a97defdc01b86af2ed9"; 
     const FALLBACK_POSTER = "https://images.unsplash.com/photo-1578632767115-351597cf2477?w=500&auto=format&fit=crop";
-
-    // NSFW / Hentai Filter Keywords
-    const NSFW_KEYWORDS = [
-      "hentai", "ecchi", "erotic", "uncensored sex", "adult anime", "hentai series", "18+ anime",
-      "overflow", "adam's sweet agony", "adams sweet agony", "sweet agony", "redo of healer", 
-      "yosuga no sora", "boku no pico", "kiss x sis", "interspecies reviewers"
-    ];
 
     let activeMedia = { id: null, type: 'tv', title: '' };
     let selectedSeason = 1;
@@ -416,20 +422,17 @@
 
     function acceptTerms() {
       const modal = document.getElementById('termsModal');
-      if (modal) modal.classList.add('hidden');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.style.display = 'none';
+      }
       document.body.style.overflow = 'auto';
     }
 
-    function isHentaiOrAdult(item) {
-      if (!item) return true;
-      if (item.adult === true) return true;
-      const title = (item.title || item.name || "").toLowerCase();
-      const overview = (item.overview || "").toLowerCase();
-      
-      for (const kw of NSFW_KEYWORDS) {
-        if (title.includes(kw) || overview.includes(kw)) return true;
-      }
-      return false;
+    function triggerLogoClick() {
+      showHomeView();
+      const banner = document.getElementById('feedbackBanner');
+      if (banner) banner.classList.remove('hidden');
     }
 
     function cleanStr(str) {
@@ -474,7 +477,7 @@
 
       if (type === 'anime') {
         document.getElementById('libraryTitle').innerText = "Anime Library";
-        document.getElementById('librarySub').innerText = "Scroll down to explore all SFW anime series.";
+        document.getElementById('librarySub').innerText = "Scroll down to explore all anime series.";
       } else if (type === 'movie') {
         document.getElementById('libraryTitle').innerText = "Movies Library";
         document.getElementById('librarySub').innerText = "Scroll down to explore all movies online.";
@@ -505,8 +508,7 @@
       try {
         const data = await fetchWithCache(url);
         if (data && data.results && data.results.length > 0) {
-          const filtered = data.results.filter(item => !isHentaiOrAdult(item));
-          appendLibraryGrid(filtered, currentLibraryType === 'movie' ? 'movie' : 'tv');
+          appendLibraryGrid(data.results, currentLibraryType === 'movie' ? 'movie' : 'tv');
           
           if (currentLibraryPage >= data.total_pages) {
             hasMorePages = false;
@@ -580,8 +582,8 @@
         if (opData && opData.id) animeList.push(opData);
 
         if (data && data.results) {
-          const sfwAnime = data.results.filter(item => item.id !== 37854 && !isHentaiOrAdult(item));
-          animeList = animeList.concat(sfwAnime);
+          const fetchedAnime = data.results.filter(item => item.id !== 37854);
+          animeList = animeList.concat(fetchedAnime);
         }
 
         const finalAnime = animeList.slice(0, 10);
@@ -611,7 +613,7 @@
         if (mentalistData && mentalistData.id) tvList.push(mentalistData);
 
         if (data && data.results) {
-          const nonAnimeTv = data.results.filter(item => item.id !== 5920 && !(item.genre_ids && item.genre_ids.includes(16)) && !isHentaiOrAdult(item));
+          const nonAnimeTv = data.results.filter(item => item.id !== 5920 && !(item.genre_ids && item.genre_ids.includes(16)));
           tvList = tvList.concat(nonAnimeTv);
         }
 
@@ -641,8 +643,8 @@
         if (brandNewDay) movieList.push(brandNewDay);
 
         if (data && data.results) {
-          const sfwMovies = data.results.filter(item => (!brandNewDay || item.id !== brandNewDay.id) && !isHentaiOrAdult(item));
-          movieList = movieList.concat(sfwMovies);
+          const movies = data.results.filter(item => (!brandNewDay || item.id !== brandNewDay.id));
+          movieList = movieList.concat(movies);
         }
 
         renderHorizontalRow(movieList.slice(0, 10), 'topMoviesRow', 'movie');
@@ -704,7 +706,6 @@
       const desc = item.overview || "No overview available.";
       
       const posterEl = document.getElementById('hero-poster');
-      const trailerEl = document.getElementById('hero-trailer');
       let backdrop = item.backdrop_path ? `https://image.tmdb.org/t/p/original${item.backdrop_path}` : getPosterUrl(item.poster_path);
 
       document.getElementById('heroTitle').innerText = title;
@@ -713,16 +714,6 @@
 
       const mediaType = (item.title) ? 'movie' : 'tv';
       document.getElementById('heroPlayBtn').onclick = () => openModal(item.id, mediaType);
-
-      fetchTrailerKey(item.id, mediaType).then(videoKey => {
-        if (videoKey && trailerEl) {
-          trailerEl.src = `https://www.youtube.com/embed/${videoKey}?autoplay=1&muted=1&loop=1&controls=0&vq=hd1080&enablejsapi=1`;
-          trailerEl.classList.add('is-loaded');
-        } else if (trailerEl) {
-          trailerEl.classList.remove('is-loaded');
-          trailerEl.src = "";
-        }
-      });
     }
 
     function debounceSearch() {
@@ -748,8 +739,7 @@
         const data = await fetchWithCache(`https://api.themoviedb.org/3/search/multi?api_key=${TMDB_KEY}&query=${encodeURIComponent(query)}&include_adult=false`);
         
         if (data.results && data.results.length > 0) {
-          const sfwResults = data.results.filter(item => !isHentaiOrAdult(item));
-          renderHorizontalRow(sfwResults.slice(0, 10), 'topAnimeRow', 'tv');
+          renderHorizontalRow(data.results.slice(0, 10), 'topAnimeRow', 'tv');
         } else {
           animeContainer.innerHTML = `<div class="text-slate-500 text-sm py-6">No results found for "${query}".</div>`;
         }
